@@ -1,0 +1,13 @@
+[
+  {
+    "username": "admin",
+    "password": "admin123",
+    "type": "admin",
+    "name": "Admin",
+    "dob": "1990-01-01",
+    "photo": "default.png",
+    "email": "admin@email.com",
+    "gender": "Other",
+    "phone": ""
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1761280850003,
+    "title": "Big pothole",
+    "desc": "",
+    "type": "Pothole",
+    "lat": 12.9662976,
+    "lng": 77.5815168,
+    "status": "Resolved",
+    "mediaType": "image",
+    "mediaUrl": "http://localhost:3300/uploads/img_1761280850001.png"
+  },
+  {
+    "id": 1761400205863,
+    "title": "Unpaved",
+    "desc": "",
+    "type": "Pothole",
+    "lat": 12.9728512,
+    "lng": 77.6077312,
+    "status": "Resolved",
+    "mediaType": "",
+    "mediaUrl": ""
+  },
+  {
+    "id": 1761400254237,
+    "title": "Mudroad",
+    "desc": "",
+    "type": "Pothole",
+    "lat": 12.9728512,
+    "lng": 77.6077312,
+    "status": "Pending",
+    "mediaType": "image",
+    "mediaUrl": "http://localhost:3300/uploads/img_1761400254236.png"
+  },
+  {
+    "id": 1761566260916,
+    "title": "Waterlogging",
+    "desc": "",
+    "type": "Waterlogging",
+    "lat": 12.9728512,
+    "lng": 77.6077312,
+    "status": "Pending",
+    "mediaType": "image",
+    "mediaUrl": "http://localhost:3300/uploads/img_1761566260912.png"
+  },
+  {
+    "id": 1762004305823,
+    "title": "Big pothole",
+    "desc": "SOlve the issue",
+    "type": "Pothole",
+    "lat": 12.9794048,
+    "lng": 77.594624,
+    "status": "Resolved",
+    "mediaType": "image",
+    "mediaUrl": "/uploads/img_1762004305821.png"
+  }
+]

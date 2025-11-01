@@ -1,0 +1,12 @@
+[
+  {
+    "username": "nandan",
+    "password": "2000",     
+    "type": "user",
+    "name": "Nandan",
+    "dob": "10-09-2005",
+    "gender": "male",
+    "email": "nandan@gmail.com",
+    "phone": "9874562301"
+  }
+]

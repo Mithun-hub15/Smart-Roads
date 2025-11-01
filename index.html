@@ -1,0 +1,49 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Road Login</title>
+  <style>
+    body { background: #202869; color: #ffe170; font-family: Arial, sans-serif; min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
+    .login-box { background: #252e4f; padding: 40px 33px; border-radius: 13px; box-shadow: 0 8px 32px #0004; }
+    .input { margin-bottom: 14px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #bbb; font-size: 1em; background: #232356; color: #ffe170; }
+    .btn { background: #22aaf9; color: #fff; border: none; border-radius: 9px; padding: 13px 21px; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 9px; width: 100%; }
+    .btn:hover { background: #1266ba; }
+    .error { color: #ff8181; font-weight: bold; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <form class="login-box" id="loginForm">
+    <h2>Smart Road Login</h2>
+    <label>Username</label>
+    <input id="login-username" class="input" type="text" required placeholder="Enter username" />
+    <label>Password</label>
+    <input id="login-password" class="input" type="password" required placeholder="Enter password" />
+    <button type="submit" class="btn">Login</button>
+    <div id="login-error" class="error"></div>
+  </form>
+  <script>
+    document.getElementById("loginForm").onsubmit = async function(e){
+      e.preventDefault();
+      let uname = document.getElementById("login-username").value.trim();
+      let pword = document.getElementById("login-password").value;
+
+      let result = await fetch('http://localhost:3300/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: uname, password: pword })
+      }).then(r => r.json());
+
+      if (!result.success) {
+        document.getElementById("login-error").textContent = "Invalid credentials!";
+        return;
+      }
+      // Redirect to the correct dashboard
+      if(result.type === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "user.html";
+      }
+    };
+  </script>
+</body>
+</html>
