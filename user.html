@@ -6,254 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+   <link rel="stylesheet" href="style/user-dashboard.css" />
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
   <script src="https://unpkg.com/leaflet-heat/dist/leaflet-heat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="main.js"></script>
+
   
-
-  <style>
-    body { margin:0; background:#202869; font-family:Arial,sans-serif; color:#ffe170; min-height:100vh;}
-    #dashboard-section { display:flex;border-radius:13px; background:#202869; min-height:100vh;}
-    .sidebar { width:230px; background:#262627; color:#ffe170; border-radius:0 20px 20px 0; min-height:100vh; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; }
-    .sidebar-title { font-size:2.1em; font-weight:bold; margin:35px 0 12px 26px; color:#ffe170;}
-    .sidebar-desc { font-size:1.04em; margin:0 20px 24px 26px; color:#ffe170; font-style:italic; opacity:0.95;}
-    .menu-item { font-size:1.1em; padding:13px 32px; margin-bottom:9px; cursor:pointer;width:100%;border-radius:0 18px 18px 0; background:none; border:none; text-align:left; color:#ffe170;}
-    .menu-item.active, .menu-item:hover { background:#ffe170; color:#262627;}
-    .main-content {flex:1; min-width:300px; padding:16px 6vw 34px 6vw; background:#202869; position:relative;}
-    .heading-gold { font-size:2em; font-weight:bold; color:#ffe170; margin-bottom:10px;}
-    .subheading-gold { font-size:1.13em; color:#ffe170; margin-bottom:14px;font-style:italic;}
-    .btn-primary, .small-btn { background:#22aaf9; color:#fff; border:none; border-radius:9px; padding:13px 21px; font-size:1em; font-weight:bold; cursor:pointer; margin-top:9px;}
-    .btn-primary:hover, .small-btn:hover { background:#1266ba;}
-    input, select, textarea { width:100%; margin-bottom:14px; padding:10px; border-radius:8px; border:1px solid #bbb; font-size:1em; background:#232356; color:#ffe170;}
-    .file-group { display:flex; align-items:center; gap:10px; margin-bottom:14px;}
-    #file-preview img, #file-preview video { max-width:120px; max-height:85px; border-radius:10px;}
-    #leaflet-report-map, #leaflet-live-map, #leaflet-heatmap { height:290px!important;margin-bottom:15px; border-radius:13px;}
-    @media (max-width:900px){ #dashboard-section { flex-direction:column; max-width:100vw; } .sidebar{border-radius:0;} .main-content{padding:13px 2vw 30px 2vw;} }
-    .profile-block, .profile-edit-box { background:#252e4f; border-radius:15px; padding:17px 23px; margin-bottom:20px; color:#ffe170;}
-    .profile-block img, .profile-edit-box img { width:93px; height:93px; object-fit:cover; border-radius:50%; border:2.5px solid #ffe170; margin-bottom:8px;}
-    .media-upload-wrapper { display:flex; align-items:center;}
-    #openCameraBtn { border:none; background:#ffe170; border-radius:0 8px 8px 0; padding:5px 13px; cursor:pointer; font-size:24px; margin-left:2px;}
-    #openCameraBtn:hover { background:#fded97; }
-    #cameraModal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#152340ec; z-index:9999; flex-direction:column; justify-content:center; align-items:center; width:100vw; height:100vh;}
-    #cameraVideo { max-width:94vw; max-height:54vh; border-radius:12px; margin-top:25px;}
-    #capturePhotoBtn { margin-top:29px; width:75px; height:75px; border-radius:50%; border:5px solid #ffe170; background:#222c; cursor:pointer; font-size:33px; color:#ffe170; display:flex; align-items:center; justify-content:center;}
-    #closeCameraBtn { position:absolute; top:15px; right:21px; font-size:38px; color:#ffe170; background:transparent; border:none; cursor:pointer;}
-    .badge { background:#ffc107; color:#262627; border-radius:4px; padding:2px 8px;font-weight:bold;}
-    table { width:100%;border-collapse:collapse;background:#252e4f;color:#ffe170;}
-    th,td { padding:8px 8px; border-bottom:1px solid #2a3459;}
-    th { background:#262627;color:#ffe170;}
-    .status-progress { color:#ffd700;}
-    .status-done { color:#65ff88;}
-    .section { display:none;}
-    .section.active { display:block;}
-    .map-tab-btn {
-  border:none; background:#fff;color:#222;
-  border-radius:22px;padding:5px 18px;font-size:1.03em;
-  box-shadow:0 1px 3px #0012;
-  cursor:pointer; transition:.12s;
-  display: flex; align-items: center; gap: 5px;
-}
-.map-tab-btn.active, .map-tab-btn:focus {
-  background: #42aaff; color:#fff;
-  font-weight:bold; outline: 2px solid #188;
-}
-.map-input {
-  background:#232b40; color:#ffe170; border:none; border-radius:8px;padding:7px 13px;font-size:1.04em;
-}
-.map-main-btn { background:#42aaff; color:#fff;padding:9px 20px;border-radius:11px; border:none; font-size:1.07em; font-weight:600;}
-#user-leaflet-map { height:430px; width:100%;}
- 
-
-#profile-section {
-  max-width: 560px;
-  margin: 46px auto 0 auto;
-  padding: 2px;
-}
-#profile-section h2 {
-  text-align: center;
-  margin-bottom: 23px;
-  color: #183153;
-  font-weight: bold;
-}
-#profile-form label {
-  font-weight: 500;
-  margin-bottom: 2px;
-  color: #18408e;
-}
-#profile-form input, #profile-form select {
-  width: 100%;
-  border-radius: 7px;
-  border: 1.3px solid #bbb;
-  margin-bottom: 13px;
-  padding: 7.5px 10px;
-  font-size: 1em;
-  background: #f6f8fc;
-  color: #222;
-}
-#profile-form input[disabled], #profile-form select[disabled] {
-  background: #eaeef2;
-  color: #888;
-}
-#edit-btn, #save-btn {
-  font-weight: 650;
-  letter-spacing: .03em;
-}
-
-#notifications-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.notification-placeholder,
-.notification-error,
-.no-notifications {
-  padding: 20px;
-  text-align: center;
-  color: #999;
-  font-style: italic;
-}
-
-.notification-error {
-  color: #d32f2f;
-}
-
-.notification-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 15px;
-  margin-bottom: 10px;
-  background: white;
-  border-left: 4px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.3s;
-}
-
-.notification-item:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  transform: translateX(5px);
-}
-
-.notification-item.success {
-  border-left-color: #28a745;
-}
-
-.notification-item.warning {
-  border-left-color: #ffc107;
-}
-
-.notification-item.info {
-  border-left-color: #17a2b8;
-}
-
-.notif-icon {
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.notif-content {
-  flex: 1;
-}
-
-.notif-message {
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.notif-time {
-  font-size: 12px;
-  color: #999;
-}
-
-.notif-dismiss {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #999;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  transition: color 0.2s;
-}
-
-.notif-dismiss:hover {
-  color: #333;
-}
-
-@keyframes fadeOut {
-  to { 
-    opacity: 0; 
-    transform: translateX(-20px); 
-  }
-}
-
-.notification-categories {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.notif-filter {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 14px;
-}
-
-.notif-filter.active {
-  background: #21808d;
-  color: white;
-  border-color: #21808d;
-}
-
-.notif-filter:hover:not(.active) {
-  background: #f0f0f0;
-}
-
-.comm-tab-btn {
-  background: #21243b;
-  color: #ffd357;
-  border: none;
-  font-size: 1.12em;
-  padding: 13px 8px;
-  cursor: pointer;
-  font-weight: 600;
-  border-bottom: 3px solid transparent;
-  transition: background 0.15s, color 0.15s, border-color 0.18s;
-}
-.comm-tab-btn.active, .comm-tab-btn:hover {
-  color: #fff;
-  background: #34365a;
-  border-bottom: 3px solid #ffd357;
-}
-
-
-</style>
 </head>
-
-
-
-
-
-
- 
-
 <body>
 <div id="dashboard-section">
   <div class="sidebar">
     <div class="sidebar-title">Smart Road</div>
     <div class="sidebar-desc">A platform for honest citizens to report, track and solve road issues.<br>Follow golden ethics, help society.<br>Please, be kind!</div>
+     <button class="menu-item" id="menu-profile">Profile</button>
     <button class="menu-item active" id="menu-report">Report Issue</button>
     <button class="menu-item" id="menu-progress">Track Progress</button>
     <button class="menu-item" id="menu-live">Live Map</button>
@@ -262,7 +30,7 @@
     <button class="menu-item" id="menu-rain">Weather</button>
     <button class="menu-item" id="menu-notify">Notifications</button>
     <button class="menu-item" id="menu-sos">SOS Emergency</button>
-    <button class="menu-item" id="menu-profile">Profile</button>
+    
  
     
   </div>
@@ -331,7 +99,7 @@
     </div>
 
     <!-- Live Map Section -->
-    <section id="user-section-livemap" class="section active">
+    <section id="user-section-livemap" class="section ">
   <h1>Live Map</h1>
   <div style="display:flex;flex-direction:column;gap:14px;">
     <div style="display:flex;gap:14px;align-items:center;">
@@ -383,29 +151,57 @@
   
 
 <!-- Community Section -->
-<div id="section-community" class="section" style="margin-top: 32px; max-width: 800px; margin-left:auto; margin-right:auto;">
+<!-- Community Section -->
+<div id="section-community" class="section" style="margin-top: 32px; max-width: 900px; margin-left:auto; margin-right:auto;">
   <div style="font-size:2.1em;font-weight:700;color:#ffd357;margin-bottom:18px;">Community</div>
-    <div style="display:flex;align-items:center;gap:18px;">
-      <img id="community-profile-photo" src="default.png" alt="Profile" 
-           style="width:70px;height:70px;border-radius:50%;border:2.5px solid #ffd357;">
-      <div>
-        <div id="community-profile-name" style="font-size:1.2em;font-weight:500;">Name Here</div>
-        <div id="community-profile-email" style="color:#93baf8;font-size:1.03em;">email@example.com</div>
-        <div id="community-profile-dob" style="color:#ffd357;font-size:.99em;font-weight:400;">DOB: yyyy-mm-dd</div>
-      </div>
+  
+  <!-- Profile Card -->
+  <div style="display:flex;align-items:center;gap:18px;background:#232356;padding:20px;border-radius:12px;margin-bottom:24px;">
+    <img id="community-profile-photo" src="" alt="Profile" style="width:70px;height:70px;border-radius:50%;border:2.5px solid #ffd357;object-fit:cover;">
+    <div>
+      <div id="community-profile-name" style="font-size:1.2em;font-weight:500;color:#fff;">Loading...</div>
+      <div id="community-profile-email" style="color:#93baf8;font-size:1.03em;">Loading...</div>
+      <div id="community-profile-dob" style="color:#ffd357;font-size:.99em;font-weight:400;">DOB: Loading...</div>
     </div>
-    <div style="margin-top:26px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;">
-      <button class="comm-tab-btn active">Trending</button>
-      <button class="comm-tab-btn">Posts</button>
-      <button class="comm-tab-btn">LeaderBoard</button>
-      <button class="comm-tab-btn">MyPosts</button>
-    </div>
+  </div>
 
-    <div id="community-tab-contents" style="margin-top:32px;">
-      <!-- Tab content will go here step by step -->
-       
+  <!-- Tab Buttons -->
+  <div style="display:flex;gap:2px;margin-bottom:24px;border-bottom:2px solid rgba(255,213,87,0.3);">
+    <button class="comm-tab-btn active" onclick="showCommunityTab('trending')" style="flex:1;background:#263075;border:none;color:#ffd357;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+      Trending
+    </button>
+    <button class="comm-tab-btn" onclick="showCommunityTab('posts')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+      Posts
+    </button>
+    <button class="comm-tab-btn" onclick="showCommunityTab('leaderboard')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+      LeaderBoard
+    </button>
+    <button class="comm-tab-btn" onclick="showCommunityTab('myposts')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+      MyPosts
+    </button>
+  </div>
+
+  <!-- Tab Content -->
+  <div id="community-tab-contents" style="margin-top:20px;min-height:300px;">
+    <div style="text-align:center;color:#93baf8;padding:40px;">
+      <i>Loading community data...</i>
     </div>
+  </div>
 </div>
+
+<!-- Add CSS for tab active state -->
+<style>
+.comm-tab-btn.active {
+  background: #263075 !important;
+  color: #22ff9b !important;
+  border-bottom: 3px solid #22ff9b !important;
+}
+.comm-tab-btn:hover {
+  background: #1e2a5e !important;
+  color: #ffd357 !important;
+}
+</style>
+
 
  
 
@@ -418,7 +214,7 @@
      
 
     <!-- Rain Mode Section -->
-    <div id="section-rain" class="section">
+  <div id="section-rain" class="section">
   <div class="heading-gold">Weather</div>
   <div class="subheading-gold">7-day forecast with hourly prediction (IST, am/pm).</div>
   <div style="margin-bottom:10px;">
@@ -446,27 +242,52 @@
   </div>
 </div>
 
-    <!-- SOS Section -->
-    <div id="section-sos" class="section">
-      <div class="heading-gold">SOS Emergency</div>
-      <div class="subheading-gold">Safety first, help others.</div>
-      <div class="profile-block">
-        <ul style="font-size:1.07em;">
-          <li>Police: <a href="tel:100">100</a></li>
-          <li>Ambulance: <a href="tel:108">108</a></li>
-          <li>Fire: <a href="tel:101">101</a></li>
-          <li>Toll Emergency: <a href="tel:1033">1033</a></li>
-        </ul>
-        <div style="color:#ffe170;font-weight:bold;">Emergency Guidelines:</div>
-        <ul>
-          <li>Stay calm, move to a safe spot.</li>
-          <li>Contact the service above.</li>
-          <li>Help others if safe.</li>
-          <li>Never spread panic.</li>
-          <li>Report truthfully. You save lives!</li>
-        </ul>
-      </div>
+<!-- SOS-->
+  <div id="section-sos" class="section"> 
+   <div class="heading-sos">SOS Emergency</div>
+  <div class="subheading-sos"> Your safety matters. Follow these steps and use these contacts in any emergency.</div>
+  
+  <div class="sos-contact-row">
+    <div class="sos-contact-box sos-police">
+      <div class="sos-label">Police</div>
+      <a href="tel:100" class="sos-number">100</a>
     </div>
+    <div class="sos-contact-box sos-ambulance">
+      <div class="sos-label">Ambulance</div>
+      <a href="tel:108" class="sos-number">108</a>
+    </div>
+  </div>
+  <div class="sos-contact-row">
+    <div class="sos-contact-box sos-fire">
+      <div class="sos-label">Fire</div>
+      <a href="tel:101" class="sos-number">101</a>
+    </div>
+    <div class="sos-contact-box sos-toll">
+      <div class="sos-label">Toll Emergency</div>
+      <a href="tel:1033" class="sos-number">1033</a>
+    </div>
+  </div>
+
+  <div class="sos-guidelines-title">User Emergency Guidelines:</div>
+  <ul class="sos-guidelines">
+    <li>Stay calm. Take a deep breath and analyze the situation.</li>
+    <li>Move to a safe location if you feel threatened or in danger.</li>
+    <li>Use the emergency numbers above to call for help immediately if required.</li>
+    <li>Share your real-time location with authorities if possible.</li>
+    <li>Assist others near you only if it is safe for you to do so.</li>
+    <li>Do not block or crowd emergency access routes.</li>
+    <li>Avoid spreading panic or unverified information on social media.</li>
+    <li>Follow instructions from police, doctors, or emergency staff.</li>
+    <li>Document details (photos, notes) only if safe and not interfering with rescue.</li>
+    <li>Report the incident accurately and cooperate fully with responders.</li>
+  </ul>
+</div>
+ 
+    
+    
+
+  
+
 
     <!-- Profile Section -->
      <section id="section-profile" class="section">
@@ -509,6 +330,10 @@
   </form>
 </section>
   </div>
+   
+
+
+
 <!-- Camera modal -->
 <div id="cameraModal">
   <video id="cameraVideo" autoplay playsinline></video>
@@ -517,25 +342,51 @@
 </div>
 <script>
   // --- Persistence ---
+  
+// ✅ CHECK IF USER IS LOGGED IN (FIX #2)
+const USERNAME = localStorage.getItem('username');
+
+if (!USERNAME || USERNAME === 'Anonymous') {
+  console.log('❌ Not logged in! Redirecting to login page...');
+  alert('Please login first!');
+  window.location.href = 'index.html';
+  throw new Error('Not logged in'); // Stop script execution
+}
+
+console.log('✅ 🔐 Logged in as:', USERNAME);
+
   function saveIssues() {localStorage.setItem('smartroad-issues', JSON.stringify(issues));}
   function loadIssues() {let d = localStorage.getItem('smartroad-issues');issues = d ? JSON.parse(d) : [];}
   function saveCommunity() {localStorage.setItem('smartroad-community', JSON.stringify(communityPosts));}
   function loadCommunity() {let d = localStorage.getItem('smartroad-community');communityPosts = d ? JSON.parse(d) : [];}
   // --- Navigation ---
-  const sections = ["report","progress","live","heatmap","community",,"rain","notify","sos","profile"];
-  sections.forEach(s => {
-    document.getElementById("menu-"+s).onclick=function(){
-      document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
-      document.querySelectorAll('.menu-item').forEach(mi=>mi.classList.remove('active'));
-      document.getElementById('section-'+s).classList.add('active');
-      this.classList.add('active');
-      if(s==='progress') renderIssuesTable();
-      if(s==='heatmap') renderHeatmap();
-      if(s==='live') renderLiveMap();
-      if(s==='community') renderCommunity();
-      if(s==='rain') renderWeather();
-    }
-  });
+  const sections = ["report","progress","live","heatmap","community","rain","notify","sos","profile"];
+
+sections.forEach(s => {
+  // Click event for each sidebar/menu tab
+  document.getElementById("menu-" + s).onclick = function() {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    // Remove active state from all menu items
+    document.querySelectorAll('.menu-item').forEach(mi => mi.classList.remove('active'));
+    // Show only the selected section
+    document.getElementById('section-' + s).classList.add('active');
+    // Set menu item as active
+    this.classList.add('active');
+
+    // Section-specific actions
+    if (s === 'progress') loadTrackProgress();
+    if (s === 'heatmap') renderHeatmap();
+    if (s === 'live') renderLiveMap();
+    if (s === 'community') fetchCommunityTab("Trending");
+    if (s === 'rain') renderWeather();
+    // add other tab logic here as needed
+  };
+});
+
+ 
+
+
   // Camera/file upload
   const cameraModal = document.getElementById('cameraModal');
   const cameraVideo = document.getElementById('cameraVideo');
@@ -583,9 +434,8 @@
   // --- Profile logic ---
    // Simulate fetching user profile data
   // ✅ FIXED: Changed photo to inline SVG instead of missing file
-  
-const USERNAME = localStorage.getItem("username");
-let profileData = {};
+  // USERNAME already declared at top of script ✅
+ let profileData = {};
 
 // Always load latest from backend
 function refreshProfile() {
@@ -686,81 +536,356 @@ window.addEventListener("DOMContentLoaded", refreshProfile);
 // --- COMMUNITY TABS, REAL LOGIC ---
 
 // Handles fetching and displaying each tab’s real content
-function fetchCommunityTab(tab) {
-  let url = "";
-  if (tab === "Trending") url = "/api/community/trending";
-  else if (tab === "Posts") url = "/api/community/posts";
-  else if (tab === "LeaderBoard") url = "/api/community/leaderboard";
-  else if (tab === "MyPosts") url = `/api/community/myposts/${USERNAME}`;
-  fetch(url)
+// ===== COMMUNITY TABS - COMPLETE WORKING VERSION =====
+
+// Fetch profile to get user photo and name for posting
+// Fetch profile for posting
+// ===== COMMUNITY FEATURE - COMPLETE CODE WITH IMAGE SUPPORT =====
+
+// Global variable for image upload
+let selectedImageFile = null;
+
+// Fetch profile for posting
+function getProfileForPost() {
+  return fetch(`http://localhost:3300/api/profile/${USERNAME}`)
     .then(res => res.json())
-    .then(data => renderCommunityTab(tab, data))
-    .catch(() => renderCommunityTab(tab, []));
+    .then(data => data || {})
+    .catch(() => ({}));
 }
 
-// Render each tab with backend data
+// Fetch tab data from backend
+function fetchCommunityTab(tab) {
+  console.log("Fetching community tab:", tab);
+  let url = "";
+  if (tab === "Trending") url = "http://localhost:3300/api/community/trending";
+  else if (tab === "Posts") url = "http://localhost:3300/api/community/posts";
+  else if (tab === "LeaderBoard") url = "http://localhost:3300/api/community/leaderboard";
+  else if (tab === "MyPosts") url = `http://localhost:3300/api/community/myposts/${USERNAME}`;
+  
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      console.log(`${tab} data:`, data);
+      renderCommunityTab(tab, data);
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+      renderCommunityTab(tab, []);
+    });
+}
+
+// Format timestamp
+function formatTime(isoString) {
+  if (!isoString) return "";
+  const date = new Date(isoString);
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
+  
+  if (diff < 60) return "Just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+// Render tab content
 function renderCommunityTab(tab, data) {
+  console.log("Rendering tab:", tab, "with data:", data);
   let html = "";
+  
   if (tab === "Trending") {
     html = data.length ? data.map(item =>
-      `<div style="margin-bottom:14px;">
-        <b>${item.title}</b> <span style="color:#ffd357;font-size:.95em;">by ${item.user}</span>
+      `<div style="margin-bottom:14px;padding:12px;background:#1e2a5e;border-radius:8px;border-left:3px solid #22ff9b;">
+        <b style="color:#22ff9b;font-size:1.05em;">${item.title}</b> 
+        <div style="color:#ffd357;font-size:.92em;margin-top:4px;">by ${item.userName||item.user}</div>
+        <div style="color:#93baf8;font-size:.88em;margin-top:2px;">${formatTime(item.time)}</div>
+        ${item.image ? `<img src="${item.image}" style="width:100%;max-height:250px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
       </div>`
-    ).join('') : "<i>No trending posts yet!</i>";
+    ).join('') : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>🔥 No trending posts yet!<br>Use # in your title to make posts trending.</i></div>";
   } 
   else if (tab === "Posts") {
     html = data.length ? data.map(item =>
-      `<div style="background:#232356;border-radius:12px;padding:13px 18px 12px;margin-bottom:17px;">
+      `<div style="background:#232356;border-radius:12px;padding:14px 18px 13px;margin-bottom:17px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
         <div style="display:flex;align-items:center;gap:13px;">
-          <img src='${item.userPhoto||"default.png"}' style="width:46px;height:46px;border-radius:50%;border:1.2px solid #ffd357;">
-          <div>
-            <b>${item.userName||item.user}</b>
-            <div style="color:#ffd357;font-size:.96em;">${item.time||""}</div>
+          <img src='${item.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:46px;height:46px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+          <div style="flex:1;">
+            <b style="font-size:1.05em;">${item.userName||item.user}</b>
+            <div style="color:#ffd357;font-size:.93em;">${formatTime(item.time)}</div>
           </div>
         </div>
-        <div style="margin-top:6px;">${item.title}</div>
-        <div style="color:#93baf8;font-size:1.03em;">${item.desc||""}</div>
+        <div style="margin-top:10px;font-size:1.08em;font-weight:500;">${item.title}</div>
+        ${item.desc ? `<div style="color:#93baf8;font-size:1.01em;margin-top:6px;">${item.desc}</div>` : ""}
+        ${item.image ? `<img src="${item.image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
       </div>`
-    ).join('') : "<i>No posts yet!</i>";
+    ).join('') : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>📝 No posts yet!<br>Be the first to share something.</i></div>";
   } 
-  else if (tab === "LeaderBoard") {
-    html = data.length ? data.map(entry =>
-      `<div style="margin-bottom:13px;display:flex;align-items:center;gap:11px;">
-        <img src='${entry.userPhoto||"default.png"}' style="width:33px;height:33px;border-radius:50%;border:1.2px solid #ffd357;">
-        <b>${entry.user}</b>
-        <span style="color:#22ff9b;">${entry.score} pts</span>
-        ${entry.badge ? `<span class="badge">${entry.badge}</span>` : ""}
-      </div>`
-    ).join('') : "<i>No leaderboard entries!</i>";
-  } 
-  else if (tab === "MyPosts") {
-    html = data.length ? data.map(post =>
-      `<div style="background:#263075;border-radius:12px;padding:13px 16px 10px;margin-bottom:15px;">
-        <div style="display:flex;align-items:center;gap:11px;">
-          <img src='${post.userPhoto||"default.png"}' style="width:41px;height:41px;border-radius:50%;border:1px solid #ffd357;">
-          <b>${post.userName||post.user}</b>
-          <span style="color:#ffd357;font-size:.95em;margin-left:8px;">${post.time||""}</span>
-        </div>
-        <div style="margin-top:4px;font-size:1.08em;">${post.title}</div>
-        <div style="color:#bacfff;font-size:.98em;margin-bottom:2px;">${post.desc||""}</div>
-      </div>`
-    ).join('') : "<i>You haven't posted anything yet!</i>";
-  }
-  document.getElementById('community-tab-contents').innerHTML = html;
+  
+  
+ else if (tab === "LeaderBoard") {
+  html = data.length ? `
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-spacing:0 10px;">
+        <thead>
+          <tr style="background:#232356;font-size:1em;">
+            <th style="color:#22ff9b;padding:6px 0;">Rank</th>
+            <th style="color:#22ff9b;padding:6px 0;">Name</th>
+            <th style="color:#ffd357;padding:6px 0;">Issues Solved</th>
+            <th style="color:#ffd357;padding:6px 0;">Points</th>
+            <th style="color:#ffd357;padding:6px 0;">Badge</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${
+            data.map((entry, idx) => `
+              <tr style="background:#1e2a5e;">
+                <td style="text-align:center;font-weight:bold;">${idx+1}</td>
+                <td style="display:flex;align-items:center;gap:8px;">
+                  ${
+                    entry.userPhoto && entry.userPhoto.trim() !== "" && entry.userPhoto !== "https://via.placeholder.com/50"
+                    ? `<img src='${entry.userPhoto}' style="width:50px;height:50px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">`
+                    : `<span style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;border:1.5px solid #ffd357;background:#181931;font-size:2em;">👤</span>`
+                  }
+                  <span style="font-weight:500;">${entry.user}</span>
+                </td>
+                <td style="text-align:center;">${entry.solved || 0}</td>
+                <td style="text-align:center;">${entry.score || 0}</td>
+                <td style="text-align:center;">
+                  ${
+                    idx === 0 ? "<span style='background:#ffd700;color:#000;padding:3px 13px;border-radius:12px;'><b>🥇 Gold</b></span>" : 
+                    idx === 1 ? "<span style='background:#ccc;color:#000;padding:3px 13px;border-radius:12px;'><b>🥈 Silver</b></span>" : 
+                    idx === 2 ? "<span style='background:#cd7f32;color:#fff;padding:3px 13px;border-radius:12px;'><b>🥉 Bronze</b></span>" :
+                    "<span style='background:#263075;color:#22ff9b;padding:3px 10px;border-radius:9px;font-size:.95em;'>Keep reporting!</span>"
+                  }
+                </td>
+              </tr>
+            `).join('')
+          }
+        </tbody>
+      </table>
+    </div>
+  `
+  : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>🏆 No leaderboard entries yet!</i></div>";
 }
 
-// Setup community tabs event listeners
-document.querySelectorAll('.comm-tab-btn').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.comm-tab-btn').forEach(b => b.classList.remove("active"));
-    btn.classList.add('active');
-    fetchCommunityTab(btn.textContent.trim());
-  };
+
+
+  else if (tab === "MyPosts") {
+    html = `
+      <div style="background:#263075;border-radius:12px;padding:20px;margin-bottom:24px;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+        <h3 style="margin:0 0 16px 0;color:#ffd357;font-size:1.2em;">✍️ Create New Post</h3>
+        
+        <input type="text" id="post-title-input" 
+          placeholder="📌 Share your road issue or suggestion (use # like #pothole #traffic for trending)" 
+          style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid #ffd357;background:#1a1f4d;color:#fff;font-size:1em;box-sizing:border-box;">
+        
+        <textarea id="post-desc-input" 
+          placeholder="💬 Tell us more... Where is it? What happened? How can it be fixed?" 
+          rows="4"
+          style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid #ffd357;background:#1a1f4d;color:#fff;font-size:1em;resize:vertical;box-sizing:border-box;"></textarea>
+        
+        <!-- Image Upload Section -->
+        <div style="margin-bottom:14px;">
+          <label for="post-image-input" style="display:inline-block;background:#1e2a5e;color:#ffd357;padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid #ffd357;font-size:0.95em;transition:all 0.3s;">
+            📷 Add Photo (Optional)
+          </label>
+          <input type="file" id="post-image-input" accept="image/*" style="display:none;">
+          <div id="image-preview" style="margin-top:12px;display:none;">
+            <img id="preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:2px solid #ffd357;">
+            <button onclick="removeImagePreview()" style="display:block;margin-top:8px;background:#ff4444;color:#fff;padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:0.9em;">
+              ❌ Remove Image
+            </button>
+          </div>
+        </div>
+        
+        <button onclick="submitPost()" style="background:#22ff9b;color:#000;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:1em;transition:all 0.3s;box-shadow:0 2px 5px rgba(34,255,155,0.3);">
+          📤 Post
+        </button>
+      </div>
+      <h3 style="color:#ffd357;margin-bottom:16px;font-size:1.15em;">📝 Your Posts</h3>
+    `;
+    
+    if (data.length) {
+      html += data.map(post =>
+        `<div style="background:#263075;border-radius:12px;padding:15px 18px 13px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <img src='${post.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:42px;height:42px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+            <div style="flex:1;">
+              <b style="font-size:1.02em;">${post.userName||post.user}</b>
+              <span style="color:#ffd357;font-size:.93em;margin-left:10px;">${formatTime(post.time)}</span>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:1.08em;font-weight:500;">${post.title}</div>
+          ${post.desc ? `<div style="color:#bacfff;font-size:.98em;margin-top:5px;">${post.desc}</div>` : ""}
+          ${post.image ? `<img src="${post.image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
+        </div>`
+      ).join('');
+    } else {
+      html += "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>✨ You haven't posted anything yet!<br>Share your thoughts above.</i></div>";
+    }
+  }
+  
+  const contentDiv = document.getElementById('community-tab-contents');
+  if (contentDiv) {
+    contentDiv.innerHTML = html;
+    console.log("Content rendered successfully");
+  } else {
+    console.error("community-tab-contents div not found!");
+  }
+}
+
+// Handle image selection
+function handleImageSelect(event) {
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    selectedImageFile = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('preview-img').src = e.target.result;
+      document.getElementById('image-preview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  } else if (file) {
+    alert("⚠️ Please select a valid image file (JPG, PNG, GIF, etc.)");
+  }
+}
+
+// Remove image preview
+function removeImagePreview() {
+  selectedImageFile = null;
+  document.getElementById('post-image-input').value = '';
+  document.getElementById('image-preview').style.display = 'none';
+  document.getElementById('preview-img').src = '';
+}
+
+// Submit new post with image support
+function submitPost() {
+  const title = document.getElementById("post-title-input").value.trim();
+  const desc = document.getElementById("post-desc-input").value.trim();
+  
+  if (!title) {
+    alert("⚠️ Please enter a title!");
+    return;
+  }
+  
+  getProfileForPost().then(profile => {
+    // Convert image to base64 if selected
+    if (selectedImageFile) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        sendPost(title, desc, profile, e.target.result);
+      };
+      reader.readAsDataURL(selectedImageFile);
+    } else {
+      sendPost(title, desc, profile, null);
+    }
+  });
+}
+
+// Send post to backend
+function sendPost(title, desc, profile, imageData) {
+  // ✅ Validation before sending
+  if (!title || !desc) {
+    alert("❌ Please fill in both title and description");
+    return;
+  }
+
+  fetch("http://localhost:3300/api/community/post", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: title,
+      desc: desc,
+      user: USERNAME,  // ✅ This is already correct!
+      userPhoto: profile.photo || "https://via.placeholder.com/50",
+      userName: profile.name || USERNAME,
+      image: imageData // Base64 image data
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`Server error: ${res.status}`);
+    }
+    return res.json();
+  })
+  .then(data => {
+    if (data.success) {
+      console.log("✅ Post created successfully:", data);
+      document.getElementById("post-title-input").value = "";
+      document.getElementById("post-desc-input").value = "";
+      removeImagePreview();
+      fetchCommunityTab("MyPosts");
+      alert("✅ Posted successfully!");
+    } else {
+      console.error("❌ Server returned error:", data);
+      alert("❌ " + (data.message || "Error posting"));
+    }
+  })
+  .catch(error => {
+    console.error("❌ Error posting:", error);
+    alert("❌ Error posting. Please check if server is running and try again.");
+  });
+}
+
+
+// Load community profile in header
+function loadCommunityProfile() {
+  fetch(`http://localhost:3300/api/profile/${USERNAME}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data && document.getElementById('community-profile-photo')) {
+        document.getElementById('community-profile-photo').src = data.photo || 'https://via.placeholder.com/70';
+        document.getElementById('community-profile-name').textContent = data.name || USERNAME;
+        document.getElementById('community-profile-email').textContent = data.email || 'No email';
+        document.getElementById('community-profile-dob').textContent = `DOB: ${data.dob || 'Not set'}`;
+      }
+    })
+    .catch(() => {
+      if(document.getElementById('community-profile-photo')) {
+        document.getElementById('community-profile-photo').src = 'https://via.placeholder.com/70';
+        document.getElementById('community-profile-name').textContent = USERNAME;
+        document.getElementById('community-profile-email').textContent = 'No email';
+        document.getElementById('community-profile-dob').textContent = 'DOB: Not set';
+      }
+    });
+}
+
+
+// Setup tab button click handlers and initialize
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("DOM loaded, setting up community tabs");
+  
+  // Setup tab click handlers
+  document.querySelectorAll('.comm-tab-btn').forEach(btn => {
+    btn.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Tab clicked:", this.textContent.trim());
+      
+      // Update active state
+      document.querySelectorAll('.comm-tab-btn').forEach(b => b.classList.remove("active"));
+      this.classList.add('active');
+      
+      // Fetch tab content
+      fetchCommunityTab(this.textContent.trim());
+    };
+  });
+  
+  // Setup image upload handler (event delegation)
+  document.addEventListener('change', function(e) {
+    if(e.target && e.target.id === 'post-image-input') {
+      handleImageSelect(e);
+    }
+  });
+  
+  // Load initial content
+  if(document.getElementById('community-tab-contents')) {
+    loadCommunityProfile();
+    fetchCommunityTab("Trending");
+  }
 });
-// Show Trending tab on page load
-window.addEventListener("DOMContentLoaded", function() {
-  fetchCommunityTab("Trending");
-});
+
+
+
 
 
 
@@ -857,50 +982,174 @@ window.addEventListener("DOMContentLoaded", function() {
   saveIssues();
 
   // Send to backend
-  await fetch('http://localhost:3300/api/report', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      title, type, desc,
-      lat: currLatLng.lat,
-      lng: currLatLng.lng,
-      status: 'In Progress',
-      mediaType,
-      imageData // only if image, can be empty for video/other
-    })
-  });
+   // Send to backend
+  document.getElementById('reportForm').onsubmit = async function (event) {
+  event.preventDefault();
+  
+  if (!currLatLng) {
+    document.getElementById('loc-error').textContent = 'Select location on map!';
+    return;
+  }
 
-  document.getElementById("reportForm").reset();
-  currLatLng = null;
-  updateCoordsLabel();
-  document.getElementById("address-label").textContent = "";
-  if (reportMarker) { reportMap.removeLayer(reportMarker); reportMarker = null;}
-  document.getElementById("file-preview").innerHTML = "";
-  window.capturedPhotoData = null;
-  alert("Issue reported!");
-  renderIssuesTable();
-  renderHeatmap();
+  const title = document.getElementById('issue-title').value.trim();
+  const type = document.getElementById('issue-type').value;
+  const desc = document.getElementById('issue-desc').value.trim();
+  const mediaFile = document.getElementById('issue-media').files[0];
+
+  let mediaUrl = null, mediaType = '', imageData = '';
+
+  // Handle image file or camera
+  if (mediaFile && mediaFile.type.startsWith('image')) {
+    const reader = new FileReader();
+    await new Promise(resolve => {
+      reader.onload = e => {
+        imageData = e.target.result;
+        resolve();
+      };
+      reader.readAsDataURL(mediaFile);
+    });
+    mediaType = 'image';
+    mediaUrl = imageData;
+  } else if (window.capturedPhotoData) {
+    imageData = window.capturedPhotoData;
+    mediaType = 'image';
+    mediaUrl = imageData;
+  } else if (mediaFile && mediaFile.type.startsWith('video')) {
+    mediaType = 'video';
+    // If you want to support video, add upload logic here
+    mediaUrl = URL.createObjectURL(mediaFile);
+    imageData = ''; // Not used for video here
+  }
+
+  const now = new Date();
+  
+  // Update local UI
+  issues.unshift({
+    title,
+    type,
+    status: 'In Progress',
+    lat: currLatLng.lat,
+    lng: currLatLng.lng,
+    desc,
+    mediaUrl,
+    mediaType,
+    time: now.toLocaleString()
+  });
+  saveIssues();
+
+  // ✅ CRITICAL FIX: Send to backend WITH username
+  try {
+    const response = await fetch('http://localhost:3300/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        type,
+        desc,
+        lat: currLatLng.lat,
+        lng: currLatLng.lng,
+        status: 'In Progress',
+        mediaType,
+        imageData, // only if image, can be empty for video/other
+        user: USERNAME  // ← CRITICAL FIX: Send logged-in username
+      })
+    });
+
+    const result = await response.json();
+    console.log('✅ Report submitted successfully:', result);
+    
+    // Reset form
+    document.getElementById('reportForm').reset();
+    currLatLng = null;
+    updateCoordsLabel();
+    document.getElementById('address-label').textContent = '';
+    if (reportMarker) {
+      reportMap.removeLayer(reportMarker);
+      reportMarker = null;
+    }
+    document.getElementById('file-preview').innerHTML = '';
+    window.capturedPhotoData = null;
+
+    alert('Issue reported successfully!');
+    renderIssuesTable();
+    renderHeatmap();
+    
+  } catch (error) {
+    console.error('❌ Error submitting report:', error);
+    alert('Failed to submit report. Please try again.');
+  }
+  }
 };
 
-  // Track Progress Table
-function renderIssuesTable() {
-  let tbody = document.querySelector("#issues-table tbody");
+ 
+
   
-  if (!issues || issues.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">No issues reported yet</td></tr>';
+
+  // Track Progress Table
+ // ✅ NEW CODE - LOAD FROM BACKEND
+async function loadTrackProgress() {
+  const currentUser = localStorage.getItem('username');
+  
+  if (!currentUser) {
+    console.error('❌ No user logged in');
     return;
   }
   
-  tbody.innerHTML = issues.map(issue => {
-    // ✅ Check if issue was just resolved (only if showNotification exists)
-    if (issue.status === 'Resolved' && !issue.notificationShown && typeof showNotification === 'function') {
-      showNotification(`✅ Your issue "${issue.title}" has been resolved!`, 'success');
-      issue.notificationShown = true;
+  try {
+    // ✅ Fetch ALL reports from backend
+    const response = await fetch('http://localhost:3300/api/reports');
+    
+    if (!response.ok) {
+      throw new Error('Failed to load reports');
     }
     
-    // ✅ Determine status class and display
-    let statusClass = 'status-progress';
-    let statusIcon = '';
+    const allReports = await response.json();
+    console.log('✅ Fetched all reports:', allReports.length);
+    
+    // ✅ FILTER: Only show reports by current user
+    issues = allReports.filter(report => 
+      report.user === currentUser || 
+      report.userName === currentUser ||
+      report.username === currentUser
+    );
+    
+    console.log(`✅ Filtered to ${issues.length} reports for user: ${currentUser}`);
+    
+    // Render the filtered issues
+    renderIssuesTable();
+    
+  } catch (error) {
+    console.error('❌ Error fetching reports:', error);
+    document.querySelector("#issues-table tbody").innerHTML = 
+      '<tr><td colspan="6" style="text-align:center; padding:20px; color:red;">Error loading reports. Please refresh.</td></tr>';
+  }
+}
+
+// ✅ RENDER FUNCTION (Keep existing, just make sure it uses global issues array)
+
+const API_BASE = "http://localhost:3300";
+function renderIssuesTable() {
+let tbody = document.querySelector("#issues-table tbody");
+  
+  if (!issues || issues.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center; padding:40px;">
+          <div style="font-size: 48px; margin-bottom: 15px;">📋</div>
+          <h3 style="margin: 0 0 10px; color: #ffd357;">No Issues Reported Yet</h3>
+          <p style="margin: 0; font-size: 14px; color: #93baf8;">
+            You haven't reported any issues. Go to "Report Issue" to submit your first report!
+          </p>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = issues.map((issue, index) => {
+    // ✅ Determine status class and icon
+    let statusClass = 'status-pending';
+    let statusIcon = ' ⏳';
     
     if (issue.status === 'Resolved' || issue.status === 'Done') {
       statusClass = 'status-done';
@@ -908,18 +1157,13 @@ function renderIssuesTable() {
     } else if (issue.status === 'In Progress') {
       statusClass = 'status-progress';
       statusIcon = ' 🔧';
-    } else if (issue.status === 'Pending') {
-      statusClass = 'status-pending';
-      statusIcon = ' ⏳';
     }
     
     return `
       <tr>
         <td>${issue.title || 'Untitled'}</td>
         <td>${issue.type || 'Other'}</td>
-        <td class="${statusClass}">
-          ${issue.status || 'Pending'}${statusIcon}
-        </td>
+        <td class="${statusClass}">${issue.status || 'Pending'}${statusIcon}</td>
         <td>
           ${issue.lat && issue.lng 
             ? `<a class="gmap-link" href="https://www.google.com/maps?q=${issue.lat},${issue.lng}" target="_blank">
@@ -930,16 +1174,17 @@ function renderIssuesTable() {
         </td>
         <td>${issue.time || new Date().toLocaleString()}</td>
         <td>
-          ${
-            issue.mediaType === "image" && issue.mediaUrl && issue.mediaUrl.startsWith('http')
-              ? `<img src="${issue.mediaUrl}" 
-                      style="max-width:58px; max-height:38px; border-radius:5px;" 
-                      alt="Photo" 
-                      onerror="this.style.display='none'; this.parentElement.innerHTML='❌';">`
-              : issue.mediaType === "video" && issue.mediaUrl
-                ? `<button onclick="window.open('${issue.mediaUrl}', '_blank')">📹 Video</button>`
-                : "—"
-          }
+           ${
+    issue.mediaType === "image" && issue.mediaUrl
+      ? `<img src="${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}"
+          style="max-width:58px; max-height:38px; border-radius:5px;"
+          alt="Photo"
+          onerror="this.style.display='none'; this.parentElement.innerHTML='❌';">`
+      : issue.mediaType === "video" && issue.mediaUrl
+        ? `<button onclick="window.open('${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}', '_blank')">📹 Video</button>`
+      : "—"
+  } 
+          
         </td>
       </tr>
     `;
@@ -1565,36 +1810,7 @@ window.addEventListener('DOMContentLoaded', renderHeatmap);
 
 //community section
 // Example user data (in real: fetch from backend)
-const communityUser = {
-  photo: "default.png", // or user profile photo url
-  name: "Nandan",
-  email: "nandan@gmail.com",
-  dob: "2000-01-01"
-};
-
-window.addEventListener('DOMContentLoaded', () => {
-  // Fill Profile details
-  document.getElementById('community-profile-photo').src = communityUser.photo;
-  document.getElementById('community-profile-name').textContent = communityUser.name;
-  document.getElementById('community-profile-email').textContent = communityUser.email;
-  document.getElementById('community-profile-dob').textContent = "DOB: " + communityUser.dob;
-
-  // Handle Tabs
-  const tabBtns = document.querySelectorAll('.comm-tab-btn');
-  let lastActive = tabBtns[0];
-  tabBtns.forEach((btn, idx) => {
-    btn.onclick = () => {
-      if(lastActive) lastActive.classList.remove('active');
-      btn.classList.add('active');
-      lastActive = btn;
-      // Load content step by step; for now just demo
-      document.getElementById('community-tab-contents').innerHTML = `<div style="color:#ffd357;font-size:1.06em;">
-        You clicked <b>${btn.textContent}</b> (feature to be built next step).
-      </div>`;
-    };
-  });
-});
-
+ 
 
 window.onload = function () {
   loadIssuesFromServer();
@@ -1603,7 +1819,7 @@ window.onload = function () {
   renderLiveMap();
  // renderIssuesTable();
   
-  renderProfile();
+   
   initMap();
   renderNotifications();
 };

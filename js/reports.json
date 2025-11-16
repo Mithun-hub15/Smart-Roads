@@ -1,57 +1,30 @@
 [
   {
-    "id": 1761280850003,
-    "title": "Big pothole",
+    "id": 1762454477824,
+    "title": "Mudpath",
     "desc": "",
-    "type": "Pothole",
-    "lat": 12.9662976,
-    "lng": 77.5815168,
+    "type": "Unpaved",
+    "lat": 12.973696609369918,
+    "lng": 77.59718531615887,
     "status": "Resolved",
     "mediaType": "image",
-    "mediaUrl": "http://localhost:3300/uploads/img_1761280850001.png"
+    "mediaUrl": "/uploads/img_1762454477812.png",
+    "user": "Surya",
+    "userName": "Surya",
+    "userEmail": "surya1@gmail.com"
   },
   {
-    "id": 1761400205863,
-    "title": "Unpaved",
-    "desc": "",
-    "type": "Pothole",
-    "lat": 12.9728512,
-    "lng": 77.6077312,
-    "status": "Resolved",
-    "mediaType": "",
-    "mediaUrl": ""
-  },
-  {
-    "id": 1761400254237,
-    "title": "Mudroad",
-    "desc": "",
-    "type": "Pothole",
-    "lat": 12.9728512,
-    "lng": 77.6077312,
-    "status": "Pending",
-    "mediaType": "image",
-    "mediaUrl": "http://localhost:3300/uploads/img_1761400254236.png"
-  },
-  {
-    "id": 1761566260916,
-    "title": "Waterlogging",
+    "id": 1763281917449,
+    "title": "Water",
     "desc": "",
     "type": "Waterlogging",
-    "lat": 12.9728512,
-    "lng": 77.6077312,
-    "status": "Pending",
-    "mediaType": "image",
-    "mediaUrl": "http://localhost:3300/uploads/img_1761566260912.png"
-  },
-  {
-    "id": 1762004305823,
-    "title": "Big pothole",
-    "desc": "SOlve the issue",
-    "type": "Pothole",
-    "lat": 12.9794048,
-    "lng": 77.594624,
+    "lat": 12.91719415746295,
+    "lng": 77.62175990349678,
     "status": "Resolved",
     "mediaType": "image",
-    "mediaUrl": "/uploads/img_1762004305821.png"
+    "mediaUrl": "/uploads/img_1763281917429.png",
+    "user": "Vijay",
+    "userName": "Vijay",
+    "userEmail": "vijay67@gmail.com"
   }
 ]

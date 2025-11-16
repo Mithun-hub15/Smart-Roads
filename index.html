@@ -1,47 +1,94 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Smart Road Login</title>
+  <title>Smart Road</title>
   <style>
-    body { background: #202869; color: #ffe170; font-family: Arial, sans-serif; min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
-    .login-box { background: #252e4f; padding: 40px 33px; border-radius: 13px; box-shadow: 0 8px 32px #0004; }
-    .input { margin-bottom: 14px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #bbb; font-size: 1em; background: #232356; color: #ffe170; }
-    .btn { background: #22aaf9; color: #fff; border: none; border-radius: 9px; padding: 13px 21px; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 9px; width: 100%; }
+    body { 
+      background: linear-gradient(rgba(32,40,105,0.85), rgba(32,40,105,0.85)), 
+       url('https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/98928811/d1907ad6-330e-4635-8187-45f8eb22d3c7/image.jpg') center/cover fixed;
+      color: #ffe170;
+      font-family: Arial;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-box { 
+      background: rgba(37,46,79,0.95);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+    h2 { color: #ffd357; margin: 0 0 20px; text-align: center; }
+    label { display: block; margin: 15px 0 5px; font-size: 14px; }
+    .input { 
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 15px;
+      background: #232356;
+      color: #fff;
+      box-sizing: border-box;
+    }
+    .btn { 
+      background: #22aaf9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
     .btn:hover { background: #1266ba; }
-    .error { color: #ff8181; font-weight: bold; margin-top: 10px; }
+    .error { color: #ff8181; margin-top: 10px; font-size: 14px; }
   </style>
 </head>
 <body>
-  <form class="login-box" id="loginForm">
-    <h2>Smart Road Login</h2>
+  <form class="login-box" id="loginForm" style="min-width:320px;">
+    <h2>🛣️ Smart Road</h2>
     <label>Username</label>
-    <input id="login-username" class="input" type="text" required placeholder="Enter username" />
-    <label>Password</label>
-    <input id="login-password" class="input" type="password" required placeholder="Enter password" />
+    <input id="username" class="input" type="text" required placeholder="Enter your name" />
+    <label>Password (Birth Year)</label>
+    <input id="password" class="input" type="password" required placeholder="e.g., 2005" />
     <button type="submit" class="btn">Login</button>
-    <div id="login-error" class="error"></div>
+    <div id="error" class="error"></div>
   </form>
+  
   <script>
-    document.getElementById("loginForm").onsubmit = async function(e){
+    document.getElementById("loginForm").onsubmit = async (e) => {
       e.preventDefault();
-      let uname = document.getElementById("login-username").value.trim();
-      let pword = document.getElementById("login-password").value;
-
-      let result = await fetch('http://localhost:3300/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: uname, password: pword })
-      }).then(r => r.json());
-
-      if (!result.success) {
-        document.getElementById("login-error").textContent = "Invalid credentials!";
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      
+      if (!username || !password) {
+        document.getElementById("error").textContent = "Please fill all fields";
         return;
       }
-      // Redirect to the correct dashboard
-      if(result.type === "admin") {
-        window.location.href = "admin.html";
-      } else {
-        window.location.href = "user.html";
+      
+      try {
+        const res = await fetch('http://localhost:3300/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          localStorage.setItem('username', username);
+          localStorage.setItem('userType', data.type || 'user');
+          window.location.href = data.type === 'admin' ? 'admin.html' : 'user.html';
+        } else {
+          document.getElementById("error").textContent = data.message || "Login failed";
+        }
+      } catch (err) {
+        document.getElementById("error").textContent = "Server error. Check if server is running.";
       }
     };
   </script>
