@@ -599,5 +599,21 @@ button#weather-btn:hover, .small-btn:hover {
   border-radius: 18px;
 }
 
+/* Center all table headers and cells */
+table, th, td {
+  text-align: center;
+  vertical-align: middle;
+}
 
+/* Optional: make the table take up less width and center itself */
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
 
+/* Optional: Center the whole table block in the parent */
+.leaderboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

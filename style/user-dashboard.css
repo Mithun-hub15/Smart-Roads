@@ -84,7 +84,7 @@ th { background:#262627;color:#ffe170;}
 }
  .heading-gold {
   color: #ffe170;
-  font-size: 1.6em;
+  font-size: 2em;
   font-weight: bold;
   margin-bottom: 8px;
 }
@@ -339,4 +339,23 @@ td {
   margin-bottom: 16px;
   font-size: 1.06em;
   line-height: 1.55;
+}
+
+/* Center all table headers and cells */
+table, th, td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Optional: make the table take up less width and center itself */
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Optional: Center the whole table block in the parent */
+.leaderboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -21,26 +21,6 @@
   },
   {
     "type": "user",
-    "username": "Surya",
-    "password": "2005",
-    "name": "Surya",
-    "email": "surya@smartroad.com",
-    "dob": "2005-01-01",
-    "photo": "https://via.placeholder.com/150",
-    "createdAt": "2025-11-06T18:27:24.414Z"
-  },
-  {
-    "type": "user",
-    "username": "Surya",
-    "password": "1999",
-    "name": "Surya",
-    "email": "surya@smartroad.com",
-    "dob": "1999-01-01",
-    "photo": "https://via.placeholder.com/150",
-    "createdAt": "2025-11-06T18:39:08.999Z"
-  },
-  {
-    "type": "user",
     "username": "admin",
     "password": "12345",
     "name": "admin",
@@ -81,16 +61,6 @@
   },
   {
     "type": "user",
-    "username": "Muniraj",
-    "password": "1947",
-    "name": "Muniraj",
-    "email": "muniraj@smartroad.com",
-    "dob": "1947-01-01",
-    "photo": "https://via.placeholder.com/150",
-    "createdAt": "2025-11-12T13:13:16.068Z"
-  },
-  {
-    "type": "user",
     "username": "Vijay",
     "password": "2005",
     "name": "Vijay",
@@ -98,16 +68,6 @@
     "dob": "2005-01-01",
     "photo": "https://via.placeholder.com/150",
     "createdAt": "2025-11-16T08:29:54.900Z"
-  },
-  {
-    "type": "user",
-    "email": "prem12@gmail.com",
-    "password": "2002",
-    "username": "prem12",
-    "name": "prem12",
-    "dob": "2002-01-01",
-    "photo": "https://via.placeholder.com/150",
-    "createdAt": "2025-11-16T08:46:34.004Z"
   },
   {
     "type": "user",
@@ -121,22 +81,32 @@
   },
   {
     "type": "user",
-    "username": "Ajay",
-    "password": "1985",
-    "name": "Ajay",
-    "email": "ajay@smartroad.com",
-    "dob": "1985-01-01",
+    "username": "Darshan",
+    "password": "1975",
+    "name": "Darshan",
+    "email": "darshan@smartroad.com",
+    "dob": "1975-01-01",
     "photo": "https://via.placeholder.com/150",
-    "createdAt": "2025-11-16T10:21:01.101Z"
+    "createdAt": "2025-11-20T14:43:05.981Z"
   },
   {
     "type": "user",
-    "username": "Ajay",
-    "password": "1981",
-    "name": "Ajay",
-    "email": "ajay@smartroad.com",
-    "dob": "1981-01-01",
+    "username": "Rohit",
+    "password": "2005",
+    "name": "Rohit",
+    "email": "rohit@smartroad.com",
+    "dob": "2005-01-01",
     "photo": "https://via.placeholder.com/150",
-    "createdAt": "2025-11-16T10:26:34.118Z"
+    "createdAt": "2025-11-20T14:50:46.487Z"
+  },
+  {
+    "type": "user",
+    "username": "Surya",
+    "password": "2005",
+    "name": "Surya",
+    "email": "surya@smartroad.com",
+    "dob": "2005-01-01",
+    "photo": "https://via.placeholder.com/150",
+    "createdAt": "2025-11-20T14:56:54.980Z"
   }
 ]
