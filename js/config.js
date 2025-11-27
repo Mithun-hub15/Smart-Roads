@@ -5,4 +5,4 @@ const CONFIG = {
 };
 
 // config.js
-const OPENWEATHER_API_KEY = "YOUR_KEY_HERE";
+const OPENWEATHER_API_KEY = "API_FREE";

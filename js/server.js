@@ -5,7 +5,6 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
- 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -158,9 +157,6 @@ app.post('/api/report', upload.none(), (req, res) => {
   
   res.json({ message: 'uploaded', report });
 });
-
-
- 
 
 // Update report status
 app.put('/api/reports/:id', (req, res) => {
@@ -372,9 +368,6 @@ app.post('/api/profile/:username', (req, res) => {
  
 // ==== COMMUNITY API ====
 
- 
- 
-
 // ===== COMMUNITY ROUTES WITH IMAGE SUPPORT =====
 
 // Add community.json path
@@ -475,8 +468,6 @@ app.get('/api/community/leaderboard', (req, res) => {
   res.json(leaderboard);
 });
 
-
-
 // GET MyPosts (specific user's posts)
 app.get("/api/community/myposts/:username", (req, res) => {
   const data = loadCommunity();
@@ -547,8 +538,6 @@ app.post('/api/issues/mark-solved', (req, res) => {
   }
 });
 
-
-
 // GET User Profile
 app.get("/api/profile/:username", (req, res) => {
   const username = req.params.username;
@@ -579,11 +568,8 @@ app.post("/api/profile/:username", (req, res) => {
   });
 });
 
-
 // Serve your frontend files (admin.html, user.html, uploads, etc.)
 app.use(express.static(__dirname));
-
-
 
 // ==== START SERVER ====
 app.listen(3300, () => {

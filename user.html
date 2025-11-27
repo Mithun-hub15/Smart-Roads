@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -151,7 +151,7 @@
   
 
 <!-- Community Section -->
-<!-- Community Section -->
+ 
 <div id="section-community" class="section" style="margin-top: 32px; max-width: 900px; margin-left:auto; margin-right:auto;">
   <div style="font-size:2.1em;font-weight:700;color:#ffd357;margin-bottom:18px;">Community</div>
   
@@ -201,17 +201,6 @@
   color: #ffd357 !important;
 }
 </style>
-
-
- 
-
-    
-    
-
-     
-
-
-     
 
     <!-- Rain Mode Section -->
   <div id="section-rain" class="section">
@@ -283,12 +272,6 @@
   </ul>
 </div>
  
-    
-    
-
-  
-
-
     <!-- Profile Section -->
      <section id="section-profile" class="section">
   <h2>User Profile</h2>
@@ -330,9 +313,6 @@
   </form>
 </section>
   </div>
-   
-
-
 
 <!-- Camera modal -->
 <div id="cameraModal">
@@ -383,9 +363,6 @@ sections.forEach(s => {
     // add other tab logic here as needed
   };
 });
-
- 
-
 
   // Camera/file upload
   const cameraModal = document.getElementById('cameraModal');
@@ -849,7 +826,6 @@ function loadCommunityProfile() {
     });
 }
 
-
 // Setup tab button click handlers and initialize
 document.addEventListener("DOMContentLoaded", function() {
   console.log("DOM loaded, setting up community tabs");
@@ -884,13 +860,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
-
-
-
-
-
-
-   
   // --- MAP & HEATMAP ---
   let currLatLng = null, reportMap, reportMarker;
   function initReportMap() {
@@ -1081,10 +1050,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 };
 
- 
-
-  
-
   // Track Progress Table
  // ✅ NEW CODE - LOAD FROM BACKEND
 async function loadTrackProgress() {
@@ -1191,8 +1156,6 @@ let tbody = document.querySelector("#issues-table tbody");
   }).join("");
 }
 
- 
-   
   // Heatmap
   function renderHeatmap(){
     const container = document.getElementById("leaflet-heatmap");
@@ -1823,9 +1786,6 @@ window.onload = function () {
   initMap();
   renderNotifications();
 };
-
-
-
 
 // Auto-hide login if already logged in
 

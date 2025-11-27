@@ -33,7 +33,6 @@ let imgData = null;
 let currentUserName = localStorage.getItem('username') || prompt("Enter your name for leaderboard:") || 'Anonymous';
 localStorage.setItem('username', currentUserName);
  
-
 // Map init for reporting
 function initReportMap() {
   if (reportMap) return;
