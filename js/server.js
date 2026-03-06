@@ -39,7 +39,11 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => { cb(null, 'uploads/'); },
   filename: (req, file, cb) => { cb(null, Date.now() + "-" + file.originalname); }
 });
-const upload = multer({ storage });
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
+});
 
 // ==== Reports (Issues) ====
  
@@ -91,20 +95,49 @@ app.get('/api/reports', (req, res) => {
 
 // ... continue with your POST /api/report and other routes ...
 
-// Upload via form
+// Upload via forapp.post('/api/report-form', upload.single('media'), (req, res) => {
+
 app.post('/api/report-form', upload.single('media'), (req, res) => {
+
   reports = loadReports();
+
+  let mediaType = "";
+  let mediaUrl = "";
+
+  if (req.file) {
+
+    if (req.file.mimetype.startsWith("image")) {
+      mediaType = "image";
+    }
+
+    else if (req.file.mimetype.startsWith("video")) {
+      mediaType = "video";
+    }
+
+    mediaUrl = "/uploads/" + req.file.filename;
+  }
+
   let report = {
     id: Date.now(),
-    ...req.body,
-    status: 'Pending',
-    mediaUrl: req.file ? "/uploads/" + req.file.filename : "",
-    type: req.body.type || "Other"
+    title: req.body.title,
+    desc: req.body.desc,
+    type: req.body.type || "Other",
+    lat: req.body.lat,
+    lng: req.body.lng,
+    status: "Pending",
+    mediaType: mediaType,
+    mediaUrl: mediaUrl,
+    user: req.body.user || "Anonymous"
   };
+
   reports.push(report);
   saveReports(reports);
-  res.json({ message: 'uploaded', report });
+
+  console.log("Report saved:", report);
+
+  res.json({ success: true, report });
 });
+
 
 // Upload via API (image base64)
 // Upload via API (image base64) - WITH USER INFO
@@ -112,15 +145,37 @@ app.post('/api/report', upload.none(), (req, res) => {
   reports = loadReports();
   let { title, desc, type, lat, lng, mediaType, imageData, user } = req.body;
   let mediaUrl = '';
-  
-  if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath);
-  
-  if (mediaType === "image" && imageData) {
-    const base64 = imageData.split(',')[1];
-    const fileName = "img_" + Date.now() + ".png";
-    fs.writeFileSync(path.join(uploadsPath, fileName), Buffer.from(base64, "base64"));
-    mediaUrl = "/uploads/" + fileName;
-  }
+
+if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath);
+
+/* IMAGE */
+let MediaUrl = '';
+
+if (mediaType === "image" && imageData) {
+
+  const base64 = imageData.split(',')[1];
+  const fileName = "img_" + Date.now() + ".png";
+
+  fs.writeFileSync(
+    path.join(uploadsPath, fileName),
+    Buffer.from(base64, "base64")
+  );
+
+  mediaUrl = "/uploads/" + fileName;
+}
+
+else if (MediaType === "video" && req.body.videoData) {
+
+  const base64 = req.body.videoData.split(',')[1];
+  const fileName = "video_" + Date.now() + ".webm";
+
+  fs.writeFileSync(
+    path.join(uploadsPath, fileName),
+    Buffer.from(base64, "base64")
+  );
+
+  mediaUrl = "/uploads/" + fileName;
+}
   
   // Get user profile details
   let userName = user || 'Anonymous';

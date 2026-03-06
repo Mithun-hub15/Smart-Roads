@@ -85,13 +85,47 @@
             <th>Status</th>
             <th>Location</th>
             <th>Uploaded</th>
-            <th>Image/Video</th>
+            <th>Image</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
+<!-- MEDIA VIEWER MODAL -->
+<div id="mediaViewer" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
 
+<div style="position:relative;max-width:90%;max-height:90%;">
+
+<button onclick="closeMediaViewer()" 
+style="
+position:absolute;
+top:-40px;
+right:0;
+background:#ff4444;
+border:none;
+color:white;
+padding:8px 14px;
+font-size:18px;
+cursor:pointer;
+border-radius:6px;">
+✕ Close
+</button>
+
+<div id="mediaViewerContent"></div>
+
+</div>
+</div>
     <!-- Live Map Section -->
     <section id="user-section-livemap" class="section ">
   <h1>Live Map</h1>
@@ -365,7 +399,10 @@ sections.forEach(s => {
   document.getElementById("openCameraBtn").onclick = async function () {
     cameraModal.style.display = 'flex';
     try {
-      cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+video: { facingMode: { ideal: "environment" } },
+audio: true
+})
       cameraVideo.srcObject = cameraStream;
       cameraVideo.play();
     } catch (err) {
@@ -395,11 +432,14 @@ sections.forEach(s => {
       reader.onload=ev=>{preview.innerHTML=`<img src="${ev.target.result}" style="max-width:115px; border-radius:9px; max-height:85px;" alt="Photo" />`;};
       reader.readAsDataURL(file);
     }
-    else if(file.type.startsWith("video")){
-      const reader=new FileReader();
-      reader.onload=ev=>{preview.innerHTML=`<video controls style="max-width:116px; border-radius:9px; max-height:86px;"><source src="${ev.target.result}" type="${file.type}"></video>`;}
-      reader.readAsDataURL(file);
-    }
+  else if(file.type.startsWith("video")){
+  const url = URL.createObjectURL(file);
+
+  preview.innerHTML = `
+  <video controls style="max-width:116px;border-radius:9px;max-height:86px;">
+  <source src="${url}" type="${file.type}">
+  </video>`;
+}
     else {preview.textContent="Unsupported file.";}
   };
   // --- Profile logic ---
@@ -961,6 +1001,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   let mediaUrl = null, mediaType = '', imageData = '';
 
+  
+
   // Handle image file or camera
   if (mediaFile && mediaFile.type.startsWith('image')) {
     const reader = new FileReader();
@@ -1133,23 +1175,52 @@ let tbody = document.querySelector("#issues-table tbody");
         </td>
         <td>${issue.time || new Date().toLocaleString()}</td>
         <td>
-           ${
-    issue.mediaType === "image" && issue.mediaUrl
-      ? `<img src="${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}"
-          style="max-width:58px; max-height:38px; border-radius:5px;"
-          alt="Photo"
-          onerror="this.style.display='none'; this.parentElement.innerHTML='❌';">`
-      : issue.mediaType === "video" && issue.mediaUrl
-        ? `<button onclick="window.open('${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}', '_blank')">📹 Video</button>`
-      : "—"
-  } 
-          
-        </td>
+${
+issue.mediaType === "image" && issue.mediaUrl
+? `<img 
+src="${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}"
+style="max-width:60px;max-height:40px;border-radius:6px;cursor:pointer"
+onclick="openMediaViewer('${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}','image')"
+>`
+
+: issue.mediaType === "video" && issue.mediaUrl
+? `<button 
+style="background:#1e88e5;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer"
+onclick="openMediaViewer('${issue.mediaUrl.startsWith('http') ? issue.mediaUrl : API_BASE + issue.mediaUrl}','video')"
+>▶ Play</button>`
+
+: "—"
+}
+</td>
+
+   
       </tr>
     `;
   }).join("");
 }
 
+function openMediaViewer(url,type){
+
+const viewer=document.getElementById("mediaViewer");
+const content=document.getElementById("mediaViewerContent");
+
+if(type==="image"){
+content.innerHTML=`<img src="${url}" style="max-width:90vw;max-height:85vh;border-radius:10px;">`;
+}
+
+else if(type==="video"){
+content.innerHTML=`
+<video controls autoplay style="max-width:90vw;max-height:85vh;border-radius:10px;">
+<source src="${url}">
+</video>`;
+}
+
+viewer.style.display="flex";
+}
+
+function closeMediaViewer(){
+document.getElementById("mediaViewer").style.display="none";
+}
   // Heatmap
   function renderHeatmap(){
     const container = document.getElementById("leaflet-heatmap");

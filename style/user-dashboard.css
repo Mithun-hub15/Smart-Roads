@@ -359,3 +359,7 @@ table {
   justify-content: center;
   align-items: center;
 }
+
+td a {
+  color: #ffe170 !important;
+}

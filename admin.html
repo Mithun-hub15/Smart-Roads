@@ -19,9 +19,7 @@
 <body>
   <div class="sidebar">
     <div class="sidebar-title">Admin</div>
-    <button onclick="manualRefresh()" style="padding:10px; background:green; color:white;">
-  🔄 Refresh Reports
-    </button>
+  
     <button class="menu-item active" id="admin-menu-reports">Issues</button>
     <button class="menu-item" id="admin-menu-map">Live Map</button>
     <button class="menu-item" id="admin-menu-ai">AI Insights</button>
@@ -60,6 +58,11 @@
         </thead>
         <tbody></tbody>
       </table>
+      <!-- Image Viewer Modal -->
+    <div id="imageModal" class="image-modal">
+      <span class="close-modal" onclick="closeImageModal()">&times;</span>
+      <img id="modalImage">
+    </div>
     </section>
     <section id="admin-section-map" class="section">
       <h1>Live Issue Map</h1>
@@ -190,7 +193,7 @@
 </section>
  
 <!-- Rain Mode Section -->
-<div id="admin-section-rain" class="section active">
+<div id="admin-section-rain" class="section ">
   <div class="heading-gold">Weather</div>
   <div class="subheading-gold">7-day forecast with hourly prediction (IST, am/pm).</div>
   <div style="margin-bottom:10px;">
@@ -390,7 +393,13 @@ async function loadReports() {
       <td>${r.desc || '—'}</td>
       <td>${r.lat && r.lng ? `<a class="gmap-link" href="#" onclick="panToLocation(${r.lat},${r.lng})" style="color:#6fc6ff;text-decoration:underline;">${Number(r.lat).toFixed(5)},${Number(r.lng).toFixed(5)}</a>` : '—'}</td>
       <td><span class="status-badge status-${(r.status || 'pending').toLowerCase().replace(' ', '')}">${r.status || 'Pending'}</span></td>
-      <td>${r.mediaUrl ? `<img src="${r.mediaUrl.startsWith('http') ? r.mediaUrl :  API_BASE  + r.mediaUrl}" alt="media" class="table-thumb">` : '—'}</td>
+      <td>
+        ${r.mediaUrl ? 
+        `<img src="${r.mediaUrl.startsWith('http') ? r.mediaUrl : API_BASE + r.mediaUrl}" 
+        class="table-thumb"
+        onclick="openImageModal(this.src)">`
+        : '—'}
+        </td>
       <td>
         <button class="action-btn btn-status" onclick="nextStatus('${r.id || ''}')">Next Status</button>
         <button class="action-btn btn-delete" onclick="deleteIssue('${r.id || ''}')">Delete</button>
@@ -401,6 +410,15 @@ async function loadReports() {
   }
   document.getElementById("filter-status").onchange = renderIssuesTable;
 
+
+function openImageModal(src){
+  document.getElementById("imageModal").style.display = "flex";
+  document.getElementById("modalImage").src = src;
+}
+
+function closeImageModal(){
+  document.getElementById("imageModal").style.display = "none";
+}
 // Function to cycle and update status (Pending -> In Progress -> Resolved -> Pending)
 function nextStatus(id) {
   fetch(api(`/api/reports/${id}`), { method: 'PUT' })
@@ -494,37 +512,67 @@ function deleteIssue(id) {
   }
 
   function renderTop5IssuesTable() {
-    // Get top 5 most recent issues
-    let top5 = issues.slice(0, 5);
 
-    function statusDot(status) {
-      let color = '#ff3636';
-      if (status && status.toLowerCase().includes('progress')) color = '#ff9800';
-      if (status && (status.toLowerCase().includes('resolved') || status.toLowerCase() === 'done')) color = '#00e07a';
-      return `<span style="display:inline-block;width:13px;height:13px;border-radius:50%;background:${color};margin-right:7px;"></span>`;
-    }
+  const pending = issues.filter(i => !i.status || i.status === "Pending");
+  const progress = issues.filter(i => i.status === "In Progress");
+  const resolved = issues.filter(i => i.status === "Resolved" || i.status === "Done");
 
-    let html = `<h3 style="color:#ffe170;margin-top:0;margin-bottom:7px;">Top 5 Issues</h3>
-      <table style="width:100%;background:#23265C;border-radius:7px;color:#ffe170;">
-        <tr>
-          <th style="padding:8px;">Sl No</th>
-          <th style="padding:8px;">Location</th>
-          <th style="padding:8px;">Issue Type</th>
-          <th style="padding:8px;">Status</th>
-        </tr>
-        ${top5.map((i, idx) => `
-          <tr>
-            <td style="padding:7px;">${idx + 1}</td>
-            <td style="padding:7px;">
-              ${i.lat && i.lng ? `<a href="#" onclick="panToLocation(${i.lat},${i.lng});return false;" style="color:#6fc6ff;text-decoration:underline;">${Number(i.lat).toFixed(4)},${Number(i.lng).toFixed(4)}</a>` : '—'}
-            </td>
-            <td style="padding:7px;">${i.type || ''}</td>
-            <td style="padding:7px;">${statusDot(i.status)} ${i.status || 'Pending'}</td>
-          </tr>
-        `).join('')}
-      </table>`;
-    document.getElementById("map-top5-table").innerHTML = html;
-  }
+function buildColumn(list,title,headerClass){
+
+return `
+<div class="issue-column">
+
+<div class="issue-header ${headerClass}">
+${title} (${list.length})
+</div>
+
+<div class="issue-scroll">
+
+<table>
+
+<tr>
+<th>Sl</th>
+<th>Location</th>
+<th>Type</th>
+</tr>
+
+${list.map((i,idx)=>`
+<tr>
+
+<td>${idx+1}</td>
+
+<td>
+${i.lat && i.lng ?
+`<a href="#" onclick="panToLocation(${i.lat},${i.lng});return false;" style="color:#6fc6ff;text-decoration:underline;">
+${Number(i.lat).toFixed(4)},${Number(i.lng).toFixed(4)}
+</a>`:'—'}
+</td>
+
+<td>${i.type || ''}</td>
+
+</tr>
+`).join("")}
+
+</table>
+
+</div>
+
+</div>
+`;
+}
+
+ document.getElementById("map-top5-table").innerHTML = `
+<div class="issue-columns">
+
+${buildColumn(pending,"Pending","pending-header")}
+
+${buildColumn(progress,"In Progress","progress-header")}
+
+${buildColumn(resolved,"Resolved","resolved-header")}
+
+</div>
+`;
+}
 
   function updateLiveMapIfVisible() {
     let sec = document.getElementById("admin-section-map");
