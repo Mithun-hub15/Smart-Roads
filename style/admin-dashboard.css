@@ -4,8 +4,9 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   margin: 0;
   min-height: 100vh;
-  display: flex;
 }
+
+/* Sidebar */
 .sidebar {
   width: 225px;
   background: #20232e;
@@ -15,8 +16,31 @@ body {
   flex-direction: column;
   align-items: flex-start;
   padding: 30px 0 0 0;
-  min-height: 100vh;
+  height: 100vh;
   box-shadow: 3px 0 16px #0004;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  overflow-y: auto;   /* allows sidebar to scroll if more menu items are added */
+}
+.sidebar::-webkit-scrollbar{
+  width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+  background:#ffe170;
+  border-radius:10px;
+}
+
+/* Main content area */
+main{
+  margin-left:225px;
+  padding:25px 25px 36px 25px;
+  background:#232356;
+  min-height:100vh;
+  width:calc(100% - 225px);
 }
 .sidebar-title {
   font-size: 1.6em;
@@ -42,13 +66,7 @@ body {
   background: #ffe170;
   color: #181a23;
 }
-main {
-  flex: 1;
-  margin: 0;
-  padding: 25px 18px 36px 36px;
-  background: #232356;
-  min-height: 100vh;
-}
+
 .section {
   display: none;
 }
@@ -759,3 +777,6 @@ background:#4aa323;
   color:white;
   cursor:pointer;
 }
+
+
+

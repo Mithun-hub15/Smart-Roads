@@ -12,12 +12,13 @@
   <script src="https://unpkg.com/leaflet-heat/dist/leaflet-heat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
   <script src="main.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 </head>
 <body>
 <div id="dashboard-section">
   <div class="sidebar">
     <div class="sidebar-title">Smart Road</div>
-    <div class="sidebar-desc">A platform for honest citizens to report, track and solve road issues.<br>Follow golden ethics, help society.<br>Please, be kind!</div>
+    <div class="sidebar-desc">A platform for citizens to report, track and solve road issues.<br>Follow golden ethics, help society.<br>Please, be kind!</div>
      <button class="menu-item" id="menu-profile">Profile</button>
     <button class="menu-item active" id="menu-report">Report Issue</button>
     <button class="menu-item" id="menu-progress">Track Progress</button>
@@ -153,6 +154,7 @@ border-radius:6px;">
       <div id="user-leaflet-map" style="height:100%;width:100%;"></div>
     </div>
     <div id="map-message" style="color:#fff;font-weight:bold;margin:5px 0 0 3px;"></div>
+    <div id="traffic-info" style="color:#ffe170;font-weight:bold;margin-left:3px;"></div>
   </div>
 </section>
  
