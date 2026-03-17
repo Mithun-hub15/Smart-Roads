@@ -2,12 +2,22 @@
 <html>
 <head>
   <title>Smart Road</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+    }
     body { 
-      background: linear-gradient(rgba(32,40,105,0.85), rgba(32,40,105,0.85)), 
-       url('https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/98928811/d1907ad6-330e-4635-8187-45f8eb22d3c7/image.jpg') center/cover fixed;
-      color: #ffe170;
-      font-family: Arial;
+      background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), 
+       url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2070&auto=format&fit=crop') center/cover fixed;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       margin: 0;
       display: flex;
@@ -15,48 +25,117 @@
       justify-content: center;
     }
     .login-box { 
-      background: rgba(37,46,79,0.95);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      backdrop-filter: blur(10px);
-    }
-    h2 { color: #ffd357; margin: 0 0 20px; text-align: center; }
-    label { display: block; margin: 15px 0 5px; font-size: 14px; }
-    .input { 
+      background: var(--card-bg);
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #bbb;
-      font-size: 15px;
-      background: #232356;
-      color: #fff;
+      max-width: 380px;
       box-sizing: border-box;
     }
+    .logo-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    h2 { 
+      color: #fff; 
+      margin: 0; 
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin: 8px 0 0 0;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    label { 
+      display: block; 
+      margin-bottom: 8px; 
+      font-size: 13px; 
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .input { 
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 15px;
+      background: rgba(15, 23, 42, 0.6);
+      color: #fff;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .input::placeholder {
+      color: #64748b;
+    }
     .btn { 
-      background: #22aaf9;
+      background: var(--primary);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 13px;
+      border-radius: 10px;
+      padding: 14px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 10px;
       width: 100%;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
     }
-    .btn:hover { background: #1266ba; }
-    .error { color: #ff8181; margin-top: 10px; font-size: 14px; }
+    .btn:hover { 
+      background: var(--primary-hover); 
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .error { 
+      color: #ef4444; 
+      margin-top: 15px; 
+      font-size: 14px; 
+      text-align: center;
+      min-height: 20px;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
-  <form class="login-box" id="loginForm" style="min-width:320px;">
-    <h2>🛣️ Smart Road</h2>
-    <label>Username</label>
-    <input id="username" class="input" type="text" required placeholder="Enter your full name (eg: Akash S)" />
-    <label>Password (Birth Year)</label>
-    <input id="password" class="input" type="password" required placeholder="e.g., 2005" />
-    <button type="submit" class="btn">Login</button>
+  <form class="login-box" id="loginForm">
+    <div class="logo-container">
+      <div class="logo-icon">🛣️</div>
+      <h2>Smart Road</h2>
+      <p class="subtitle">Log in to your account</p>
+    </div>
+    
+    <div class="input-group">
+      <label>Username</label>
+      <input id="username" class="input" type="text" required placeholder="Enter your full name" />
+    </div>
+    
+    <div class="input-group">
+      <label>Password (Birth Year)</label>
+      <input id="password" class="input" type="password" required placeholder="e.g., 2005" />
+    </div>
+    
+    <button type="submit" class="btn">Sign In</button>
     <div id="error" class="error"></div>
   </form>
   
@@ -65,11 +144,18 @@
       e.preventDefault();
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
+      const errorDiv = document.getElementById("error");
       
       if (!username || !password) {
-        document.getElementById("error").textContent = "Please fill all fields";
+        errorDiv.textContent = "Please fill all fields";
         return;
       }
+      
+      errorDiv.textContent = ""; // Clear previous error
+      const btn = document.querySelector(".btn");
+      const originalText = btn.textContent;
+      btn.textContent = "Signing in...";
+      btn.disabled = true;
       
       try {
         const res = await fetch('http://localhost:3300/api/login', {
@@ -85,10 +171,14 @@
           localStorage.setItem('userType', data.type || 'user');
           window.location.href = data.type === 'admin' ? 'admin.html' : 'user.html';
         } else {
-          document.getElementById("error").textContent = data.message || "Login failed";
+          errorDiv.textContent = data.message || "Login failed";
+          btn.textContent = originalText;
+          btn.disabled = false;
         }
       } catch (err) {
-        document.getElementById("error").textContent = "Server error. Check if server is running.";
+        errorDiv.textContent = "Server error. Check if server is running.";
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
     };
   </script>
