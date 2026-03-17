@@ -304,43 +304,78 @@ border-radius:6px;">
  
     <!-- Profile Section -->
      <section id="section-profile" class="section">
-  <h2>User Profile</h2>
-  <div id="profile-message" style="color:green;display:none;">Profile updated!</div>
-  <form id="profile-form" enctype="multipart/form-data" style="max-width:440px;background:#fff;padding:32px 28px 22px 28px;border-radius:18px;margin:auto;box-shadow:0 3px 34px #0023;">
-    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:17px;">
-      <img id="profile-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23ddd'/%3E%3C/svg%3E" style="width:110px;height:110px;object-fit:cover;border-radius:50%;border:2.3px solid #4d9dfb;margin-bottom:10px;"/>
-      <input type="file" id="profile-upload" accept="image/*" style="display:none;" />
-      <button type="button" id="edit-photo-btn" style="margin-top:4px;background:none;color:#4d9dfb;font-weight:600;border:none;cursor:pointer;">Edit Photo</button>
+  <div class="heading-gold">My Profile</div>
+  <div class="subheading-gold">Manage your personal information and track your impact.</div>
+  
+  <div id="profile-message" style="color:var(--accent);display:none;background:rgba(16, 185, 129, 0.1);padding:10px;border-radius:12px;text-align:center;margin-bottom:15px;border:1px solid rgba(16, 185, 129, 0.2);font-weight:500;">Profile updated successfully!</div>
+  
+  <div style="background:var(--bg-card);border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 15px 35px rgba(0,0,0,0.15);max-width:800px;margin:auto;">
+    <!-- Profile Cover -->
+    <div style="height:150px;background:linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);position:relative;overflow:hidden;">
+       <div style="position:absolute;top:0;left:0;width:100%;height:100%;background-image:radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%);"></div>
     </div>
-    <div>
-      <label>Name:</label>
-      <input type="text" id="profile-name" class="profile-input" disabled />
-    </div>
-    <div>
-      <label>DOB:</label>
-      <input type="date" id="profile-dob" class="profile-input" disabled />
-      <span id="profile-age" style="margin-left:175px;"></span>
-    </div>
-    <div>
-      <label>Gender:</label>
-      <select id="profile-gender" class="profile-input" disabled>
-        <option value="">Select gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
-    <div>
-      <label>Email:</label>
-      <input type="email" id="profile-email" class="profile-input" disabled />
-    </div>
-    <div>
-      <label>Phone:</label>
-      <input type="text" id="profile-phone" class="profile-input" disabled />
-    </div>
-    <button type="button" id="edit-btn" style="margin-top:18px;width:100%;background:#3a7bea;color:#fff; font-size:1.1em;border-radius:8px;border:none;padding:13px 0;">Edit Profile</button>
-    <button type="submit" id="save-btn" style="display:none;margin-top:18px;width:100%;background:#1ec38a;color:#fff; font-size:1.1em;border-radius:8px;border:none;padding:13px 0;">Save Profile</button>
-  </form>
+    
+    <form id="profile-form" enctype="multipart/form-data" style="padding:0 30px 30px 30px;position:relative;background:transparent;box-shadow:none;border:none;">
+      
+      <!-- Avatar Section -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:-50px; margin-bottom:30px; flex-wrap:wrap; gap:15px;">
+        <div style="position:relative;">
+          <img id="profile-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23ddd'/%3E%3C/svg%3E" style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:4px solid var(--bg-card);background:var(--bg-dark);box-shadow:0 5px 15px rgba(0,0,0,0.3);"/>
+          <input type="file" id="profile-upload" accept="image/*" style="display:none;" />
+          <button type="button" id="edit-photo-btn" style="position:absolute;bottom:5px;right:5px;background:var(--primary);color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="Edit Photo" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✏️</button>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div style="display:flex; gap:15px; margin-bottom:10px;">
+          <div style="background:rgba(0,0,0,0.2);padding:12px 20px;border-radius:14px;text-align:center;border:1px solid rgba(255,255,255,0.05);">
+            <div style="font-size:0.8em;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Issues Reported</div>
+            <div style="font-size:1.4em;font-weight:700;color:#fff;" id="stat-issues">0</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.2);padding:12px 20px;border-radius:14px;text-align:center;border:1px solid rgba(255,255,255,0.05);">
+            <div style="font-size:0.8em;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Resolved</div>
+            <div style="font-size:1.4em;font-weight:700;color:var(--accent);" id="stat-resolved">0</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Form Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:20px;margin-bottom:20px;">
+        <div>
+          <label>Full Name <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="profile-name" class="profile-input" disabled />
+        </div>
+        <div>
+          <label>Email Address</label>
+          <input type="email" id="profile-email" class="profile-input" disabled />
+        </div>
+        <div>
+          <label>Date of Birth</label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="date" id="profile-dob" class="profile-input" disabled style="margin-bottom:0;" />
+            <span id="profile-age" style="color:#818cf8;font-weight:600;min-width:65px;font-size:0.9em;background:rgba(99,102,241,0.1);padding:14px 10px;border-radius:12px;text-align:center;border:1px solid rgba(99,102,241,0.2);"></span>
+          </div>
+        </div>
+        <div>
+          <label>Gender</label>
+          <select id="profile-gender" class="profile-input" disabled>
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div style="grid-column:1 / -1;">
+          <label>Phone Number</label>
+          <input type="text" id="profile-phone" class="profile-input" disabled />
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:15px;margin-top:10px;">
+        <button type="button" id="edit-btn" class="btn-primary" style="flex:1;">Edit Profile Settings</button>
+        <button type="submit" id="save-btn" class="btn-primary" style="display:none;flex:1;background:var(--accent);box-shadow:0 4px 15px rgba(16, 185, 129, 0.3);">Save Changes</button>
+      </div>
+    </form>
+  </div>
 </section>
   </div>
 
@@ -468,13 +503,18 @@ function refreshProfile() {
 
 // Fill fields with current profile data
 function fillProfileForm() {
-  document.getElementById("profile-photo").src = profileData.photo || "default.png";
+  document.getElementById("profile-photo").src = profileData.photo || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23ddd'/%3E%3C/svg%3E";
   document.getElementById("profile-name").value = profileData.name || "";
   document.getElementById("profile-dob").value = profileData.dob || "";
   document.getElementById("profile-gender").value = profileData.gender || "";
   document.getElementById("profile-email").value = profileData.email || "";
   document.getElementById("profile-phone").value = profileData.phone || "";
-  document.getElementById("profile-age").textContent = profileData.dob ? `Age: ${getAge(profileData.dob)}` : "";
+  document.getElementById("profile-age").textContent = profileData.dob ? `${getAge(profileData.dob)} yrs` : "--";
+  
+  if (document.getElementById("stat-issues")) {
+    document.getElementById("stat-issues").textContent = issues.length || 0;
+    document.getElementById("stat-resolved").textContent = issues.filter(i => i.status === 'Resolved' || i.status === 'Done').length || 0;
+  }
 }
 
 // Sync community card every time
@@ -538,6 +578,9 @@ document.getElementById("profile-upload").onchange = function(e) {
   reader.onload = function(evt) {
     document.getElementById("profile-photo").src = evt.target.result;
     profileData.photo = evt.target.result;
+    
+    document.getElementById("save-btn").style.display = "block";
+    document.getElementById("edit-btn").style.display = "none";
   };
   reader.readAsDataURL(file);
 };

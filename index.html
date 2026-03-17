@@ -3,141 +3,298 @@
 <head>
   <title>Smart Road</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --bg-dark: #0f172a;
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --text-main: #f8fafc;
-      --text-muted: #cbd5e1;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.5);
+      --bg-dark: #0f111a;
+      --card-bg: rgba(20, 24, 39, 0.6);
+      --text-main: #ffffff;
+      --text-muted: #94a3b8;
     }
+    
+    * {
+      box-sizing: border-box;
+    }
+
     body { 
-      background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), 
-       url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2070&auto=format&fit=crop') center/cover fixed;
+      background: var(--bg-dark);
       color: var(--text-main);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
       margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* Animated Background Elements */
+    .bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      animation: float 20s infinite ease-in-out alternate;
+    }
+    
+    .shape-1 {
+      width: 500px;
+      height: 500px;
+      background: rgba(99, 102, 241, 0.15);
+      top: -150px;
+      left: -150px;
+    }
+    
+    .shape-2 {
+      width: 600px;
+      height: 600px;
+      background: rgba(168, 85, 247, 0.15);
+      bottom: -200px;
+      right: -100px;
+      animation-delay: -5s;
+    }
+    
+    .shape-3 {
+      width: 300px;
+      height: 300px;
+      background: rgba(16, 185, 129, 0.1);
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 50px) scale(1.1); }
+      100% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+    }
+
     .login-box { 
       background: var(--card-bg);
-      padding: 40px 35px;
-      border-radius: 20px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 48px 40px;
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       width: 100%;
-      max-width: 380px;
-      box-sizing: border-box;
     }
+
     .logo-container {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 36px;
     }
+
     .logo-icon {
-      font-size: 40px;
-      margin-bottom: 10px;
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: inline-block;
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
+      animation: pulse 3s infinite;
     }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
     h2 { 
       color: #fff; 
       margin: 0; 
-      font-size: 24px;
-      font-weight: 600;
+      font-size: 28px;
+      font-weight: 700;
       letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
+
     p.subtitle {
       color: var(--text-muted);
-      font-size: 14px;
-      margin: 8px 0 0 0;
+      font-size: 15px;
+      margin: 10px 0 0 0;
+      font-weight: 400;
     }
+
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      position: relative;
     }
+
     label { 
       display: block; 
       margin-bottom: 8px; 
       font-size: 13px; 
-      font-weight: 500;
-      color: var(--text-muted);
+      font-weight: 600;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
+
     .input { 
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 10px;
+      padding: 16px 20px;
+      border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 15px;
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.4);
       color: #fff;
-      box-sizing: border-box;
-      transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
+
+    .input:hover {
+      background: rgba(15, 23, 42, 0.6);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
     .input:focus {
       outline: none;
+      background: rgba(15, 23, 42, 0.8);
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
     }
+
     .input::placeholder {
-      color: #64748b;
+      color: #475569;
     }
+
     .btn { 
       background: var(--primary);
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 16px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 12px;
       width: 100%;
-      transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px var(--primary-glow);
     }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+
     .btn:hover { 
       background: var(--primary-hover); 
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--primary-glow);
     }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
     .btn:active {
       transform: translateY(1px);
+      box-shadow: 0 2px 10px var(--primary-glow);
     }
+
     .error { 
-      color: #ef4444; 
-      margin-top: 15px; 
+      color: #f87171; 
+      margin-top: 16px; 
       font-size: 14px; 
       text-align: center;
       min-height: 20px;
       font-weight: 500;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Decorative dots */
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 30px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+    }
+    .dot.active {
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
     }
   </style>
 </head>
 <body>
-  <form class="login-box" id="loginForm">
-    <div class="logo-container">
-      <div class="logo-icon">🛣️</div>
-      <h2>Smart Road</h2>
-      <p class="subtitle">Log in to your account</p>
-    </div>
-    
-    <div class="input-group">
-      <label>Username</label>
-      <input id="username" class="input" type="text" required placeholder="Enter your full name" />
-    </div>
-    
-    <div class="input-group">
-      <label>Password (Birth Year)</label>
-      <input id="password" class="input" type="password" required placeholder="e.g., 2005" />
-    </div>
-    
-    <button type="submit" class="btn">Sign In</button>
-    <div id="error" class="error"></div>
-  </form>
+  
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+  <div class="bg-shape shape-3"></div>
+
+  <div class="login-container">
+    <form class="login-box" id="loginForm">
+      <div class="logo-container">
+        <div class="logo-icon">🛣️</div>
+        <h2>Smart Road</h2>
+        <p class="subtitle">Secure access portal</p>
+      </div>
+      
+      <div class="input-group">
+        <label>Username</label>
+        <input id="username" class="input" type="text" required placeholder="Enter your full name" autocomplete="off" />
+      </div>
+      
+      <div class="input-group">
+        <label>Password (Birth Year)</label>
+        <input id="password" class="input" type="password" required placeholder="e.g., 2005" />
+      </div>
+      
+      <button type="submit" class="btn">Authenticate</button>
+      <div id="error" class="error"></div>
+      
+      <div class="dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </form>
+  </div>
   
   <script>
     document.getElementById("loginForm").onsubmit = async (e) => {
@@ -146,16 +303,19 @@
       const password = document.getElementById("password").value.trim();
       const errorDiv = document.getElementById("error");
       
+      errorDiv.classList.remove("show");
+      
       if (!username || !password) {
         errorDiv.textContent = "Please fill all fields";
+        errorDiv.classList.add("show");
         return;
       }
       
-      errorDiv.textContent = ""; // Clear previous error
       const btn = document.querySelector(".btn");
       const originalText = btn.textContent;
-      btn.textContent = "Signing in...";
+      btn.innerHTML = '<span style="opacity:0.7">Authenticating...</span>';
       btn.disabled = true;
+      btn.style.transform = 'scale(0.98)';
       
       try {
         const res = await fetch('http://localhost:3300/api/login', {
@@ -167,18 +327,32 @@
         const data = await res.json();
         
         if (data.success) {
+          // Success animation before redirect
+          btn.style.background = '#10b981';
+          btn.innerHTML = 'Access Granted';
+          document.querySelector('.login-box').style.transform = 'scale(1.02)';
+          document.querySelector('.login-box').style.opacity = '0';
+          document.querySelector('.login-box').style.transition = 'all 0.5s ease';
+          
           localStorage.setItem('username', username);
           localStorage.setItem('userType', data.type || 'user');
-          window.location.href = data.type === 'admin' ? 'admin.html' : 'user.html';
+          
+          setTimeout(() => {
+            window.location.href = data.type === 'admin' ? 'admin.html' : 'user.html';
+          }, 600);
         } else {
-          errorDiv.textContent = data.message || "Login failed";
-          btn.textContent = originalText;
+          errorDiv.textContent = data.message || "Authentication failed";
+          errorDiv.classList.add("show");
+          btn.innerHTML = originalText;
           btn.disabled = false;
+          btn.style.transform = 'none';
         }
       } catch (err) {
-        errorDiv.textContent = "Server error. Check if server is running.";
-        btn.textContent = originalText;
+        errorDiv.textContent = "Unable to connect to server";
+        errorDiv.classList.add("show");
+        btn.innerHTML = originalText;
         btn.disabled = false;
+        btn.style.transform = 'none';
       }
     };
   </script>

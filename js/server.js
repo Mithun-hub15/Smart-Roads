@@ -6,8 +6,8 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
 // ==== Persistent Users Setup ====
@@ -591,36 +591,6 @@ app.post('/api/issues/mark-solved', (req, res) => {
     console.error('Error in mark-solved:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
   }
-});
-
-// GET User Profile
-app.get("/api/profile/:username", (req, res) => {
-  const username = req.params.username;
-  
-  // For now, return a default profile
-  // You can later store profiles in a separate JSON file
-  res.json({
-    name: username,
-    email: `${username.toLowerCase()}@gmail.com`,
-    phone: "+91-XXXXXXXXXX",
-    dob: "1-1-1999",
-    photo: "https://via.placeholder.com/150"
-  });
-});
-
-// POST Update User Profile (optional - for future use)
-app.post("/api/profile/:username", (req, res) => {
-  const username = req.params.username;
-  const profileData = req.body;
-  
-  // Store profile data (you can create profiles.json for persistence)
-  console.log(`Profile updated for ${username}:`, profileData);
-  
-  res.json({ 
-    success: true, 
-    message: "Profile updated successfully",
-    profile: profileData 
-  });
 });
 
 // Serve your frontend files (admin.html, user.html, uploads, etc.)
