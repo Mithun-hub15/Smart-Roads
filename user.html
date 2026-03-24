@@ -66,7 +66,7 @@
         </div>
         <div class="file-group">
           <input type="file" id="issue-media" accept="image/*,video/*" />
-          <span style="color:#ffe170;">Choose file</span>
+          <span style="color:var(--text-main);">Choose file</span>
         </div>
         <div id="file-preview"></div>
 
@@ -113,7 +113,7 @@ style="
 position:absolute;
 top:-40px;
 right:0;
-background:#ff4444;
+background:var(--danger);
 border:none;
 color:white;
 padding:8px 14px;
@@ -154,7 +154,7 @@ border-radius:6px;">
       <div id="user-leaflet-map" style="height:100%;width:100%;"></div>
     </div>
     <div id="map-message" style="color:#fff;font-weight:bold;margin:5px 0 0 3px;"></div>
-    <div id="traffic-info" style="color:#ffe170;font-weight:bold;margin-left:3px;"></div>
+    <div id="traffic-info" style="color:var(--text-main);font-weight:bold;margin-left:3px;"></div>
   </div>
 </section>
  
@@ -183,37 +183,37 @@ border-radius:6px;">
 <!-- Community Section -->
  
 <div id="section-community" class="section" style="margin-top: 32px; max-width: 900px; margin-left:auto; margin-right:auto;">
-  <div style="font-size:2.1em;font-weight:700;color:#ffd357;margin-bottom:18px;">Community</div>
+  <div style="font-size:2.1em;font-weight:700;color:var(--text-main);margin-bottom:18px;">Community</div>
   
   <!-- Profile Card -->
-  <div style="display:flex;align-items:center;gap:18px;background:#232356;padding:20px;border-radius:12px;margin-bottom:24px;">
-    <img id="community-profile-photo" src="" alt="Profile" style="width:70px;height:70px;border-radius:50%;border:2.5px solid #ffd357;object-fit:cover;">
+  <div style="display:flex;align-items:center;gap:18px;background:var(--bg-card);padding:20px;border-radius:12px;margin-bottom:24px;">
+    <img id="community-profile-photo" src="" alt="Profile" style="width:70px;height:70px;border-radius:50%;border:2.5px solid var(--text-main);object-fit:cover;">
     <div>
       <div id="community-profile-name" style="font-size:1.2em;font-weight:500;color:#fff;">Loading...</div>
-      <div id="community-profile-email" style="color:#93baf8;font-size:1.03em;">Loading...</div>
-      <div id="community-profile-dob" style="color:#ffd357;font-size:.99em;font-weight:400;">DOB: Loading...</div>
+      <div id="community-profile-email" style="color:var(--text-muted);font-size:1.03em;">Loading...</div>
+      <div id="community-profile-dob" style="color:var(--text-main);font-size:.99em;font-weight:400;">DOB: Loading...</div>
     </div>
   </div>
 
   <!-- Tab Buttons -->
-  <div style="display:flex;gap:2px;margin-bottom:24px;border-bottom:2px solid rgba(255,213,87,0.3);">
-    <button class="comm-tab-btn active" onclick="showCommunityTab('trending')" style="flex:1;background:#263075;border:none;color:#ffd357;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+  <div style="display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border);">
+    <button class="comm-tab-btn active" onclick="showCommunityTab('trending')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-main);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       Trending
     </button>
-    <button class="comm-tab-btn" onclick="showCommunityTab('posts')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+    <button class="comm-tab-btn" onclick="showCommunityTab('posts')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-muted);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       Posts
     </button>
-    <button class="comm-tab-btn" onclick="showCommunityTab('leaderboard')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+    <button class="comm-tab-btn" onclick="showCommunityTab('leaderboard')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-muted);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       LeaderBoard
     </button>
-    <button class="comm-tab-btn" onclick="showCommunityTab('myposts')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+    <button class="comm-tab-btn" onclick="showCommunityTab('myposts')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-muted);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       MyPosts
     </button>
   </div>
 
   <!-- Tab Content -->
   <div id="community-tab-contents" style="margin-top:20px;min-height:300px;">
-    <div style="text-align:center;color:#93baf8;padding:40px;">
+    <div style="text-align:center;color:var(--text-muted);padding:40px;">
       <i>Loading community data...</i>
     </div>
   </div>
@@ -222,13 +222,13 @@ border-radius:6px;">
 <!-- Add CSS for tab active state -->
 <style>
 .comm-tab-btn.active {
-  background: #263075 !important;
-  color: #22ff9b !important;
-  border-bottom: 3px solid #22ff9b !important;
+  background: var(--bg-card) !important;
+  color: var(--primary) !important;
+  border-bottom: 3px solid var(--primary) !important;
 }
 .comm-tab-btn:hover {
-  background: #1e2a5e !important;
-  color: #ffd357 !important;
+  background: var(--bg-card) !important;
+  color: var(--text-main) !important;
 }
 </style>
 
@@ -309,7 +309,7 @@ border-radius:6px;">
   
   <div id="profile-message" style="color:var(--accent);display:none;background:rgba(16, 185, 129, 0.1);padding:10px;border-radius:12px;text-align:center;margin-bottom:15px;border:1px solid rgba(16, 185, 129, 0.2);font-weight:500;">Profile updated successfully!</div>
   
-  <div style="background:var(--bg-card);border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 15px 35px rgba(0,0,0,0.15);max-width:800px;margin:auto;">
+  <div class="data-container" style="background:var(--bg-card);border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 15px 35px rgba(0,0,0,0.15);max-width:800px;margin:auto;">
     <!-- Profile Cover -->
     <div style="height:150px;background:linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);position:relative;overflow:hidden;">
        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background-image:radial-gradient(circle at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%);"></div>
@@ -651,29 +651,29 @@ function renderCommunityTab(tab, data) {
   
   if (tab === "Trending") {
     html = data.length ? data.map(item =>
-      `<div style="margin-bottom:14px;padding:12px;background:#1e2a5e;border-radius:8px;border-left:3px solid #22ff9b;">
-        <b style="color:#22ff9b;font-size:1.05em;">${item.title}</b> 
-        <div style="color:#ffd357;font-size:.92em;margin-top:4px;">by ${item.userName||item.user}</div>
-        <div style="color:#93baf8;font-size:.88em;margin-top:2px;">${formatTime(item.time)}</div>
+      `<div style="margin-bottom:14px;padding:12px;background:var(--bg-card);border-radius:8px;border-left:3px solid var(--primary);">
+        <b style="color:var(--primary);font-size:1.05em;">${item.title}</b> 
+        <div style="color:var(--text-main);font-size:.92em;margin-top:4px;">by ${item.userName||item.user}</div>
+        <div style="color:var(--text-muted);font-size:.88em;margin-top:2px;">${formatTime(item.time)}</div>
         ${item.image ? `<img src="${item.image}" style="width:100%;max-height:250px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
       </div>`
-    ).join('') : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>🔥 No trending posts yet!<br>Use # in your title to make posts trending.</i></div>";
+    ).join('') : "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>🔥 No trending posts yet!<br>Use # in your title to make posts trending.</i></div>";
   } 
   else if (tab === "Posts") {
     html = data.length ? data.map(item =>
-      `<div style="background:#232356;border-radius:12px;padding:14px 18px 13px;margin-bottom:17px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+      `<div style="background:var(--bg-card);border-radius:12px;padding:14px 18px 13px;margin-bottom:17px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
         <div style="display:flex;align-items:center;gap:13px;">
-          <img src='${item.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:46px;height:46px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+          <img src='${item.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:46px;height:46px;border-radius:50%;border:1.5px solid var(--text-main);object-fit:cover;">
           <div style="flex:1;">
             <b style="font-size:1.05em;">${item.userName||item.user}</b>
-            <div style="color:#ffd357;font-size:.93em;">${formatTime(item.time)}</div>
+            <div style="color:var(--text-main);font-size:.93em;">${formatTime(item.time)}</div>
           </div>
         </div>
         <div style="margin-top:10px;font-size:1.08em;font-weight:500;">${item.title}</div>
-        ${item.desc ? `<div style="color:#93baf8;font-size:1.01em;margin-top:6px;">${item.desc}</div>` : ""}
+        ${item.desc ? `<div style="color:var(--text-muted);font-size:1.01em;margin-top:6px;">${item.desc}</div>` : ""}
         ${item.image ? `<img src="${item.image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
       </div>`
-    ).join('') : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>📝 No posts yet!<br>Be the first to share something.</i></div>";
+    ).join('') : "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>📝 No posts yet!<br>Be the first to share something.</i></div>";
   } 
   
   
@@ -682,24 +682,24 @@ function renderCommunityTab(tab, data) {
     <div style="overflow-x:auto;">
       <table style="width:100%;border-spacing:0 10px;">
         <thead>
-          <tr style="background:#232356;font-size:1em;">
-            <th style="color:#22ff9b;padding:6px 0;">Rank</th>
-            <th style="color:#22ff9b;padding:6px 0;">Name</th>
-            <th style="color:#ffd357;padding:6px 0;">Issues Solved</th>
-            <th style="color:#ffd357;padding:6px 0;">Points</th>
-            <th style="color:#ffd357;padding:6px 0;">Badge</th>
+          <tr style="background:var(--bg-card);font-size:1em;">
+            <th style="color:var(--primary);padding:6px 0;">Rank</th>
+            <th style="color:var(--primary);padding:6px 0;">Name</th>
+            <th style="color:var(--text-main);padding:6px 0;">Issues Solved</th>
+            <th style="color:var(--text-main);padding:6px 0;">Points</th>
+            <th style="color:var(--text-main);padding:6px 0;">Badge</th>
           </tr>
         </thead>
         <tbody>
           ${
             data.map((entry, idx) => `
-              <tr style="background:#1e2a5e;">
+              <tr style="background:var(--bg-card);">
                 <td style="text-align:center;font-weight:bold;">${idx+1}</td>
                 <td style="display:flex;align-items:center;gap:8px;">
                   ${
                     entry.userPhoto && entry.userPhoto.trim() !== "" && entry.userPhoto !== "https://via.placeholder.com/50"
-                    ? `<img src='${entry.userPhoto}' style="width:50px;height:50px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">`
-                    : `<span style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;border:1.5px solid #ffd357;background:#181931;font-size:2em;">👤</span>`
+                    ? `<img src='${entry.userPhoto}' style="width:50px;height:50px;border-radius:50%;border:1.5px solid var(--text-main);object-fit:cover;">`
+                    : `<span style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;border:1.5px solid var(--text-main);background:var(--bg-dark);font-size:2em;">👤</span>`
                   }
                   <span style="font-weight:500;">${entry.user}</span>
                 </td>
@@ -710,7 +710,7 @@ function renderCommunityTab(tab, data) {
                     idx === 0 ? "<span style='background:#ffd700;color:#000;padding:3px 13px;border-radius:12px;'><b>🥇 Gold</b></span>" : 
                     idx === 1 ? "<span style='background:#ccc;color:#000;padding:3px 13px;border-radius:12px;'><b>🥈 Silver</b></span>" : 
                     idx === 2 ? "<span style='background:#cd7f32;color:#fff;padding:3px 13px;border-radius:12px;'><b>🥉 Bronze</b></span>" :
-                    "<span style='background:#263075;color:#22ff9b;padding:3px 10px;border-radius:9px;font-size:.95em;'>Keep reporting!</span>"
+                    "<span style='background:var(--bg-card);color:var(--primary);padding:3px 10px;border-radius:9px;font-size:.95em;'>Keep reporting!</span>"
                   }
                 </td>
               </tr>
@@ -720,63 +720,63 @@ function renderCommunityTab(tab, data) {
       </table>
     </div>
   `
-  : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>🏆 No leaderboard entries yet!</i></div>";
+  : "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>🏆 No leaderboard entries yet!</i></div>";
 }
 
 
 
   else if (tab === "MyPosts") {
     html = `
-      <div style="background:#263075;border-radius:12px;padding:20px;margin-bottom:24px;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
-        <h3 style="margin:0 0 16px 0;color:#ffd357;font-size:1.2em;">✍️ Create New Post</h3>
+      <div style="background:var(--bg-card);border-radius:12px;padding:20px;margin-bottom:24px;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+        <h3 style="margin:0 0 16px 0;color:var(--text-main);font-size:1.2em;">✍️ Create New Post</h3>
         
         <input type="text" id="post-title-input" 
           placeholder="📌 Share your road issue or suggestion (use # like #pothole #traffic for trending)" 
-          style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid #ffd357;background:#1a1f4d;color:#fff;font-size:1em;box-sizing:border-box;">
+          style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid var(--text-main);background:var(--bg-dark);color:#fff;font-size:1em;box-sizing:border-box;">
         
         <textarea id="post-desc-input" 
           placeholder="💬 Tell us more... Where is it? What happened? How can it be fixed?" 
           rows="4"
-          style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid #ffd357;background:#1a1f4d;color:#fff;font-size:1em;resize:vertical;box-sizing:border-box;"></textarea>
+          style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid var(--text-main);background:var(--bg-dark);color:#fff;font-size:1em;resize:vertical;box-sizing:border-box;"></textarea>
         
         <!-- Image Upload Section -->
         <div style="margin-bottom:14px;">
-          <label for="post-image-input" style="display:inline-block;background:#1e2a5e;color:#ffd357;padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid #ffd357;font-size:0.95em;transition:all 0.3s;">
+          <label for="post-image-input" style="display:inline-block;background:var(--bg-card);color:var(--text-main);padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid var(--text-main);font-size:0.95em;transition:all 0.3s;">
             📷 Add Photo (Optional)
           </label>
           <input type="file" id="post-image-input" accept="image/*" style="display:none;">
           <div id="image-preview" style="margin-top:12px;display:none;">
-            <img id="preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:2px solid #ffd357;">
-            <button onclick="removeImagePreview()" style="display:block;margin-top:8px;background:#ff4444;color:#fff;padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:0.9em;">
+            <img id="preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:2px solid var(--text-main);">
+            <button onclick="removeImagePreview()" style="display:block;margin-top:8px;background:var(--danger);color:#fff;padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:0.9em;">
               ❌ Remove Image
             </button>
           </div>
         </div>
         
-        <button onclick="submitPost()" style="background:#22ff9b;color:#000;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:1em;transition:all 0.3s;box-shadow:0 2px 5px rgba(34,255,155,0.3);">
+        <button onclick="submitPost()" style="background:var(--primary);color:#000;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:1em;transition:all 0.3s;box-shadow:0 2px 5px rgba(34,255,155,0.3);">
           📤 Post
         </button>
       </div>
-      <h3 style="color:#ffd357;margin-bottom:16px;font-size:1.15em;">📝 Your Posts</h3>
+      <h3 style="color:var(--text-main);margin-bottom:16px;font-size:1.15em;">📝 Your Posts</h3>
     `;
     
     if (data.length) {
       html += data.map(post =>
-        `<div style="background:#263075;border-radius:12px;padding:15px 18px 13px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+        `<div style="background:var(--bg-card);border-radius:12px;padding:15px 18px 13px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
           <div style="display:flex;align-items:center;gap:12px;">
-            <img src='${post.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:42px;height:42px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+            <img src='${post.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--text-main);object-fit:cover;">
             <div style="flex:1;">
               <b style="font-size:1.02em;">${post.userName||post.user}</b>
-              <span style="color:#ffd357;font-size:.93em;margin-left:10px;">${formatTime(post.time)}</span>
+              <span style="color:var(--text-main);font-size:.93em;margin-left:10px;">${formatTime(post.time)}</span>
             </div>
           </div>
           <div style="margin-top:10px;font-size:1.08em;font-weight:500;">${post.title}</div>
-          ${post.desc ? `<div style="color:#bacfff;font-size:.98em;margin-top:5px;">${post.desc}</div>` : ""}
+          ${post.desc ? `<div style="color:var(--text-muted);font-size:.98em;margin-top:5px;">${post.desc}</div>` : ""}
           ${post.image ? `<img src="${post.image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
         </div>`
       ).join('');
     } else {
-      html += "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>✨ You haven't posted anything yet!<br>Share your thoughts above.</i></div>";
+      html += "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>✨ You haven't posted anything yet!<br>Share your thoughts above.</i></div>";
     }
   }
   
@@ -966,7 +966,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function updateCoordsLabel() {
     const label = document.getElementById("coords-label");
     if (currLatLng && currLatLng.lat && currLatLng.lng)
-      label.innerHTML = `📍 <span style="color:#ffe170;">Latitude: ${currLatLng.lat.toFixed(6)}, Longitude: ${currLatLng.lng.toFixed(6)}</span>`;
+      label.innerHTML = `📍 <span style="color:var(--text-main);">Latitude: ${currLatLng.lat.toFixed(6)}, Longitude: ${currLatLng.lng.toFixed(6)}</span>`;
     else label.innerHTML = "";
   }
   function fetchAddress() {
@@ -1182,8 +1182,8 @@ let tbody = document.querySelector("#issues-table tbody");
       <tr>
         <td colspan="6" style="text-align:center; padding:40px;">
           <div style="font-size: 48px; margin-bottom: 15px;">📋</div>
-          <h3 style="margin: 0 0 10px; color: #ffd357;">No Issues Reported Yet</h3>
-          <p style="margin: 0; font-size: 14px; color: #93baf8;">
+          <h3 style="margin: 0 0 10px; color: var(--text-main);">No Issues Reported Yet</h3>
+          <p style="margin: 0; font-size: 14px; color: var(--text-muted);">
             You haven't reported any issues. Go to "Report Issue" to submit your first report!
           </p>
         </td>
@@ -1310,7 +1310,7 @@ async function renderWeather() {
   let data = await fetch(url).then(r=>r.json());
   let d = data.daily, n = d.time.length, cards = "";
   for(let i=0; i<n; ++i) {
-    cards += `<div class="weather-day-card" onclick="showHourly(${i})" style="cursor:pointer;background:#22aaf9;padding:15px 20px;border-radius:14px;font-size:1.1em;color:#fff;min-width:150px;text-align:center;box-shadow:0 2px 8px #0002;">
+    cards += `<div class="weather-day-card" onclick="showHourly(${i})" style="cursor:pointer;background:var(--primary);padding:15px 20px;border-radius:14px;font-size:1.1em;color:#fff;min-width:150px;text-align:center;box-shadow:0 2px 8px #0002;">
       <div style="font-size:2em;">${wxIcon(d.weathercode[i])}</div>
       <div style="margin:3px 0;font-weight:bold;">${getDay(d.time[i])}</div>
       <div style="font-size:1.2em;">${d.temperature_2m_max[i]}° / ${d.temperature_2m_min[i]}°</div>
@@ -1330,7 +1330,7 @@ window.showHourly = function(dayIx) {
   for(let i=0; i<d.hourly.time.length; i++) {
     if(d.hourly.time[i].startsWith(day)) {
       let hr = d.hourly.time[i].slice(11,13);
-      out += `<div style="background:#252e4f;color:#ffe170;border-radius:10px;padding:8px 10px;min-width:64px;text-align:center;">
+      out += `<div style="background:var(--bg-card);color:var(--text-main);border-radius:10px;padding:8px 10px;min-width:64px;text-align:center;">
         <div style="font-size:1.2em;">${wxIcon(d.hourly.weathercode[i])}</div>
         <div>${ampm(hr)}</div>
         <div>${Math.round(d.hourly.temperature_2m[i])}°C</div>
@@ -1370,7 +1370,7 @@ async function geocodePlace(query) {
 function setMapMessage(msg, error=false){
   let el = document.getElementById('map-message');
   el.textContent = msg || '';
-  el.style.color = error ? '#ff4e4e' : '#ffe170';
+  el.style.color = error ? '#ff4e4e' : 'var(--text-main)';
 }
 
 function clearPOIMarkers(){
@@ -1578,6 +1578,7 @@ async function loadIssuesFromServer() {
     issues = data; // Update global issues array
     console.log('Loaded issues from server:', issues.length);
     renderIssuesTable(); // Re-render table with real data
+    if (typeof fillProfileForm === 'function') fillProfileForm(); // Update profile stats
   } catch (error) {
     console.error('Failed to load issues:', error);
     issues = []; // Fallback to empty array

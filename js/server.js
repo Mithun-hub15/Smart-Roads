@@ -152,6 +152,26 @@ app.get('/api/profile/:username', (req, res) => {
   const profiles = readJsonFile(PROFILE_PATH);
   const profile = profiles.find(p => p.username === req.params.username);
   res.json(profile || {});
+
+  
+  if (profile) {
+    res.json(profile);
+  } else {
+    const users = loadUsers();
+    const user = users.find(u => u.username.toLowerCase() === req.params.username.toLowerCase());
+    if (user) {
+      res.json({
+        username: user.username,
+        name: user.name || user.username,
+        email: user.email || '',
+        dob: user.dob || '',
+        photo: user.photo || ''
+      });
+    } else {
+      res.status(404).json({});
+    }
+  }
+
 });
 
 app.post('/api/profile/:username', (req, res) => {
