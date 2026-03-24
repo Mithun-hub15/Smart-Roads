@@ -329,7 +329,7 @@
 <script>
 
  // --- API base helper (works for file:// and any port) ---
-const API_BASE = "http://localhost:3300";
+const API_BASE = "";
 const api = (path) => `${API_BASE}${path}`;
 
 function showSection(id) {
@@ -804,7 +804,7 @@ async function renderHeatmap() {
   // Fetch live issues from backend
   let issuesData = [];
   try {
-    const res = await fetch("http://localhost:3300/api/reports");
+    const res = await fetch("/api/reports");
     issuesData = await res.json();
   } catch (e) {
     issuesData = [];
@@ -843,7 +843,7 @@ let selectedImageFile = null;
 
 // Fetch profile for creating posts
 function getProfileForPost() {
-  return fetch(`http://localhost:3300/api/profile/${USERNAME}`)
+  return fetch(`/api/profile/${USERNAME}`)
     .then(res => res.json())
     .then(data => data || {})
     .catch(() => ({}));
@@ -851,10 +851,10 @@ function getProfileForPost() {
 
 function fetchCommunityTab(tab) {
   let url = "";
-  if (tab === "Trending") url = "http://localhost:3300/api/community/trending";
-  else if (tab === "Posts") url = "http://localhost:3300/api/community/posts";
-  else if (tab === "LeaderBoard") url = "http://localhost:3300/api/community/leaderboard";
-  else if (tab === "MyPosts") url = `http://localhost:3300/api/community/myposts/${USERNAME}`;
+  if (tab === "Trending") url = "/api/community/trending";
+  else if (tab === "Posts") url = "/api/community/posts";
+  else if (tab === "LeaderBoard") url = "/api/community/leaderboard";
+  else if (tab === "MyPosts") url = `/api/community/myposts/${USERNAME}`;
   fetch(url)
     .then(res => res.json())
     .then(data => renderCommunityTab(tab, data))
@@ -1035,7 +1035,7 @@ function sendPost(title, desc, profile, imageData) {
     alert("❌ Please fill in both title and description");
     return;
   }
-  fetch("http://localhost:3300/api/community/post", {
+  fetch("/api/community/post", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -1069,7 +1069,7 @@ function sendPost(title, desc, profile, imageData) {
 
 // Load community profile in header
 function loadCommunityProfile() {
-  fetch(`http://localhost:3300/api/profile/${USERNAME}`)
+  fetch(`/api/profile/${USERNAME}`)
     .then(res => res.json())
     .then(data => {
       if(data && document.getElementById('community-profile-photo')) {
@@ -1196,7 +1196,7 @@ async function renderNotifications() {
 
   let serverIssues = [];
   try {
-    const response = await fetch('http://localhost:3300/api/reports');
+    const response = await fetch('/api/reports');
     if (!response.ok) throw new Error('Server returned ' + response.status);
     serverIssues = await response.json();
     console.log('Loaded issues for notifications:', serverIssues.length);
@@ -1391,7 +1391,7 @@ const USERNAME = localStorage.getItem('username') || "admin";
 let profileData = {};
 
 function refreshProfile() {
-  fetch(`http://localhost:3300/api/profile/${USERNAME}`)
+  fetch(`/api/profile/${USERNAME}`)
     .then(res => res.json())
     .then(data => {
       profileData = data || {};
@@ -1439,7 +1439,7 @@ document.getElementById("profile-form").onsubmit = function(e) {
   document.getElementById("save-btn").style.display = "none";
   document.getElementById("edit-btn").style.display = "";
   // Save to backend
-  fetch(`http://localhost:3300/api/profile/${USERNAME}`, {
+  fetch(`/api/profile/${USERNAME}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(profileData)
