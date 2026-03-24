@@ -610,6 +610,11 @@ app.post('/api/issues/mark-solved', (req, res) => {
   }
 });
 
+// Serve index.html for the root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
 // Serve your frontend files (admin.html, user.html, icons, style, etc.)
 app.use(express.static(path.join(__dirname, '..')));
 
