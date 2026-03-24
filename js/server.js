@@ -610,12 +610,13 @@ app.post('/api/issues/mark-solved', (req, res) => {
   }
 });
 
-// Serve your frontend files (admin.html, user.html, uploads, etc.)
-app.use(express.static(__dirname));
+// Serve your frontend files (admin.html, user.html, icons, style, etc.)
+app.use(express.static(path.join(__dirname, '..')));
 
 // ==== START SERVER ====
-app.listen(3300, () => {
-  console.log("✅ Server running at http://localhost:3300");
+const PORT = process.env.PORT || 3300;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running at http://0.0.0.0:${PORT}`);
   console.log("✅ Reports file:", REPORTS_PATH);
   console.log("✅ Loaded reports:", loadReports().length);
 });
