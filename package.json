@@ -1,4 +1,11 @@
 {
+  "name": "smart-roads",
+  "version": "1.0.0",
+  "description": "Smart Roads - Citizen reporting platform",
+  "main": "js/server.js",
+  "scripts": {
+    "start": "node js/server.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
