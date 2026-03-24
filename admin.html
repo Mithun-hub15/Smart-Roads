@@ -76,8 +76,8 @@
   <h1>AI Insights</h1>
   <div id="ai-cards" style="display:flex;gap:25px;margin-bottom:32px;flex-wrap:wrap;"></div>
   <div id="ai-insights-trends"></div>
-  <h3 style="margin:28px 0 10px 0;color:#afe7ff;">All Report Types</h3>
-  <table id="ai-types-table" style="background:#212447;width:100%;color:#ffe170;border-radius:10px;">
+  <h3 style="margin:28px 0 10px 0;color:var(--text-main);">All Report Types</h3>
+  <table id="ai-types-table" style="background:var(--bg-card);width:100%;color:var(--text-main);border-radius:10px;">
     <thead>
       <tr>
         <th style="padding:10px;">Type</th>
@@ -105,8 +105,8 @@
     <!-- (Optionally add a bar chart at the far right if you want) -->
   </div>
   <div style="margin-top:32px;">
-    <h3 style="color:#afe7ff;">Breakdown by Type</h3>
-    <table id="analytics-types-table" style="background:#23265C;width:100%;color:#ffe170;border-radius:10px;">
+    <h3 style="color:var(--text-main);">Breakdown by Type</h3>
+    <table id="analytics-types-table" style="background:var(--bg-card);width:100%;color:var(--text-main);border-radius:10px;">
       <thead>
         <tr>
           <th style="padding:10px;">Type</th>
@@ -157,37 +157,37 @@
 
 <!-- Community Section -->
 <section id="admin-section-community" class="section" style="margin-top: 32px; max-width: 900px; margin-left:auto; margin-right:auto;">
-  <div style="font-size:2.1em;font-weight:700;color:#ffd357;margin-bottom:18px;">Community</div>
+  <div style="font-size:2.1em;font-weight:700;color:var(--text-main);margin-bottom:18px;">Community</div>
   
   <!-- Profile Card -->
-  <div style="display:flex;align-items:center;gap:18px;background:#232356;padding:20px;border-radius:12px;margin-bottom:24px;">
-    <img id="community-profile-photo" src="" alt="Profile" style="width:70px;height:70px;border-radius:50%;border:2.5px solid #ffd357;object-fit:cover;">
+  <div style="display:flex;align-items:center;gap:18px;background:var(--bg-card);padding:20px;border-radius:12px;margin-bottom:24px;">
+    <img id="community-profile-photo" src="" alt="Profile" style="width:70px;height:70px;border-radius:50%;border:2.5px solid var(--text-main);object-fit:cover;">
     <div>
       <div id="community-profile-name" style="font-size:1.2em;font-weight:500;color:#fff;">Loading...</div>
-      <div id="community-profile-email" style="color:#93baf8;font-size:1.03em;">Loading...</div>
-      <div id="community-profile-dob" style="color:#ffd357;font-size:.99em;font-weight:400;">DOB: Loading...</div>
+      <div id="community-profile-email" style="color:var(--text-muted);font-size:1.03em;">Loading...</div>
+      <div id="community-profile-dob" style="color:var(--text-main);font-size:.99em;font-weight:400;">DOB: Loading...</div>
     </div>
   </div>
 
   <!-- Tab Buttons -->
-  <div style="display:flex;gap:2px;margin-bottom:24px;border-bottom:2px solid rgba(255,213,87,0.3);">
-    <button class="comm-tab-btn active" onclick="showCommunityTab('trending')" style="flex:1;background:#263075;border:none;color:#ffd357;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+  <div style="display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border);">
+    <button class="comm-tab-btn active" onclick="showCommunityTab('trending')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-main);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       Trending
     </button>
-    <button class="comm-tab-btn" onclick="showCommunityTab('posts')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+    <button class="comm-tab-btn" onclick="showCommunityTab('posts')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-muted);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       Posts
     </button>
-    <button class="comm-tab-btn" onclick="showCommunityTab('leaderboard')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+    <button class="comm-tab-btn" onclick="showCommunityTab('leaderboard')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-muted);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       LeaderBoard
     </button>
-    <button class="comm-tab-btn" onclick="showCommunityTab('myposts')" style="flex:1;background:#232356;border:none;color:#93baf8;padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
+    <button class="comm-tab-btn" onclick="showCommunityTab('myposts')" style="flex:1;background:var(--bg-card);border:none;color:var(--text-muted);padding:12px 20px;cursor:pointer;font-size:1.05em;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.3s;">
       MyPosts
     </button>
   </div>
 
   <!-- Tab Content -->
   <div id="community-tab-contents" style="margin-top:20px;min-height:300px;">
-    <div style="text-align:center;color:#93baf8;padding:40px;">
+    <div style="text-align:center;color:var(--text-muted);padding:40px;">
       <i>Loading community data...</i>
     </div>
   </div>
@@ -199,10 +199,10 @@
   <div class="subheading-gold">7-day forecast with hourly prediction (IST, am/pm).</div>
   <div style="margin-bottom:10px;">
     <input id="weather-search" type="text" placeholder="Type city (e.g. Mysore)" style="width:300px;max-width:70vw;padding:7px 9px;border-radius:7px;border:1px solid #889;">
-    <button id="weather-btn" class="small-btn" style="background:#22aaf9;color:#fff;border:none;padding:10px 18px;border-radius:7px;font-weight:bold;font-size:1.02em;cursor:pointer;">Get Weather</button>
+    <button id="weather-btn" class="small-btn" style="background:var(--primary);color:#fff;border:none;padding:10px 18px;border-radius:7px;font-weight:bold;font-size:1.02em;cursor:pointer;">Get Weather</button>
   </div>
   <!-- Scrollable day cards row -->
-  <div id="weather-cards" style="display:flex;flex-wrap:nowrap;overflow-x:auto;gap:18px;white-space:nowrap;scrollbar-width:thin;scrollbar-color:#ffe170 #252e4f;"></div>
+  <div id="weather-cards" style="display:flex;flex-wrap:nowrap;overflow-x:auto;gap:18px;white-space:nowrap;scrollbar-width:thin;scrollbar-color:var(--text-main) var(--bg-card);"></div>
   <!-- Only the hourly details below become horizontally scrollable on click -->
   <div id="hourly-details" style="margin-top:20px;"></div>
 </div>
@@ -416,10 +416,10 @@ async function loadReports() {
     <tr>
       <td><strong>${r.title || ''}</strong></td>
       <td><span style="padding:4px 10px;background:#1e90ff;border-radius:5px;font-size:0.9em;">${r.type || 'Other'}</span></td>
-      <td style="color:#6fc6ff;font-weight:500;">${r.userName || r.user || 'Anonymous'}</td>
+      <td style="color:var(--primary);font-weight:500;">${r.userName || r.user || 'Anonymous'}</td>
       <td style="font-size:0.9em;color:#aaa;">${r.userEmail || 'N/A'}</td>
       <td>${r.desc || '—'}</td>
-      <td>${r.lat && r.lng ? `<a class="gmap-link" href="#" onclick="panToLocation(${r.lat},${r.lng})" style="color:#6fc6ff;text-decoration:underline;">${Number(r.lat).toFixed(5)},${Number(r.lng).toFixed(5)}</a>` : '—'}</td>
+      <td>${r.lat && r.lng ? `<a class="gmap-link" href="#" onclick="panToLocation(${r.lat},${r.lng})" style="color:var(--primary);text-decoration:underline;">${Number(r.lat).toFixed(5)},${Number(r.lng).toFixed(5)}</a>` : '—'}</td>
       <td><span class="status-badge status-${(r.status || 'pending').toLowerCase().replace(' ', '')}">${r.status || 'Pending'}</span></td>
       <td>
         ${r.mediaUrl ? 
@@ -571,7 +571,7 @@ ${list.map((i,idx)=>`
 
 <td>
 ${i.lat && i.lng ?
-`<a href="#" onclick="panToLocation(${i.lat},${i.lng});return false;" style="color:#6fc6ff;text-decoration:underline;">
+`<a href="#" onclick="panToLocation(${i.lat},${i.lng});return false;" style="color:var(--primary);text-decoration:underline;">
 ${Number(i.lat).toFixed(4)},${Number(i.lng).toFixed(4)}
 </a>`:'—'}
 </td>
@@ -642,21 +642,21 @@ function renderAIInsights() {
   let stats = computeInsights(issues);
   // 1. Summary Cards
   document.getElementById("ai-cards").innerHTML = `
-    <div style="background:#242a51;border-radius:11px;padding:22px 40px 14px 40px;text-align:center;min-width:130px;">
+    <div style="background:var(--bg-card);border-radius:11px;padding:22px 40px 14px 40px;text-align:center;min-width:130px;">
       <div style="font-size:1.1em;margin-bottom:7px;">Total Issues</div>
       <div style="font-size:2.2em;font-weight:bold;">${stats.total}</div>
     </div>
-    <div style="background:#242a51;border-radius:11px;padding:22px 30px 14px 30px;text-align:center;min-width:170px;">
+    <div style="background:var(--bg-card);border-radius:11px;padding:22px 30px 14px 30px;text-align:center;min-width:170px;">
       <div style="font-size:1.1em;margin-bottom:7px;">Top Types</div>
       ${stats.topTypes.map(([t,n])=>`<div style="margin-bottom:6px;">${t}: <b>${n}</b></div>`).join('')}
     </div>
-    <div style="background:#242a51;border-radius:11px;padding:22px 30px 14px 30px;text-align:center;min-width:170px;">
+    <div style="background:var(--bg-card);border-radius:11px;padding:22px 30px 14px 30px;text-align:center;min-width:170px;">
       <div style="font-size:1.1em;margin-bottom:7px;">Hotspots</div>
       ${stats.topLocations.map(([l,n])=>{
   // Parse out lat/lng safely as floats from string like "12.89,77.55"
   let [lat, lng] = l.split(',').map(Number);
   return `<div style="margin-bottom:6px;">
-      <a href="#" style="color:#6fc6ff;text-decoration:underline;" onclick="
+      <a href="#" style="color:var(--primary);text-decoration:underline;" onclick="
         showSection('map');
         setTimeout(function(){ panToLocation(${lat},${lng}); }, 100);
         return false;
@@ -664,24 +664,24 @@ function renderAIInsights() {
     </div>`;
 }).join('')}
 
-    <div style="background:#242a51;border-radius:11px;padding:22px 25px 14px 25px;text-align:center;min-width:130px;">
+    <div style="background:var(--bg-card);border-radius:11px;padding:22px 25px 14px 25px;text-align:center;min-width:130px;">
       <div style="font-size:1.12em;margin-bottom:7px;">Resolved/Unresolved</div>
-      <div><span style="color:#11c79c;font-weight:bold;">${stats.resolved}</span> <span style="opacity:.66;">/</span> <span style="color:#ff5722;font-weight:bold;">${stats.unresolved}</span></div>
+      <div><span style="color:var(--accent);font-weight:bold;">${stats.resolved}</span> <span style="opacity:.66;">/</span> <span style="color:var(--danger);font-weight:bold;">${stats.unresolved}</span></div>
     </div>
-    <div style="background:#242a51;border-radius:11px;padding:22px 30px 14px 30px;text-align:center;min-width:170px;">
+    <div style="background:var(--bg-card);border-radius:11px;padding:22px 30px 14px 30px;text-align:center;min-width:170px;">
       <div style="font-size:1.1em;margin-bottom:7px;">Most Recent</div>
 <div>
   ${stats.mostRecent && stats.mostRecent.lat && stats.mostRecent.lng
-    ? `<a href="#" style="color:#6fc6ff;text-decoration:underline;"
+    ? `<a href="#" style="color:var(--primary);text-decoration:underline;"
          onclick="showSection('map'); setTimeout(function(){ panToLocation(${Number(stats.mostRecent.lat)},${Number(stats.mostRecent.lng)}); }, 100); return false;">
          ${stats.mostRecent.type}</a>`
     : (stats.mostRecent ? stats.mostRecent.type : '—')
   }
 </div>
-<div style="font-size:.96em;color:#aad">${stats.mostRecent?.status || ""}</div>
+<div style="font-size:.96em;color:var(--text-muted)">${stats.mostRecent?.status || ""}</div>
 <div style="font-size:.97em;color:#42e3fd">
   ${stats.mostRecent && stats.mostRecent.lat && stats.mostRecent.lng
-    ? `<a href="#" style="color:#6fc6ff;text-decoration:underline;"
+    ? `<a href="#" style="color:var(--primary);text-decoration:underline;"
          onclick="showSection('map'); setTimeout(function(){ panToLocation(${Number(stats.mostRecent.lat)},${Number(stats.mostRecent.lng)}); }, 100); return false;">
          ${Number(stats.mostRecent.lat).toFixed(4)},${Number(stats.mostRecent.lng).toFixed(4)}</a>`
     : ''
@@ -693,8 +693,8 @@ function renderAIInsights() {
   let trendType = stats.topTypes[0] && stats.topTypes[0][1]/(stats.total||1) > 0.25;
   let trendLoc  = stats.topLocations[0] && stats.topLocations[0][1]/(stats.total||1) > 0.25;
   document.getElementById("ai-insights-trends").innerHTML = `
-    ${trendType ? `<div style="margin-bottom:9px;color:#ff7d5a;"><b>Alert:</b> Problem type <strong>${stats.topTypes[0][0]}</strong> is trending!</div>` : ''}
-    ${trendLoc ? `<div style="color:#ffb84d;"><b>Alert:</b> Location <strong>${stats.topLocations[0][0]}</strong> is a new hotspot!</div>` : ''}
+    ${trendType ? `<div style="margin-bottom:9px;color:var(--danger);"><b>Alert:</b> Problem type <strong>${stats.topTypes[0][0]}</strong> is trending!</div>` : ''}
+    ${trendLoc ? `<div style="color:var(--warning);"><b>Alert:</b> Location <strong>${stats.topLocations[0][0]}</strong> is a new hotspot!</div>` : ''}
   `;
   // 3. All Types Table
   let tbody = document.querySelector("#ai-types-table tbody");
@@ -708,7 +708,7 @@ renderAIInsights()
 function renderAnalytics() {
   let stats = computeInsights(issues);
 
-  const typeColors = ['#1e90ff','#ff9800','#ff3f34','#11c79c','#ffe170','#6fc6ff','#ffa534'];
+  const typeColors = ['#1e90ff','#ff9800','#ff3f34','#11c79c','var(--text-main)','#6fc6ff','#ffa534'];
   const typeLabels = Object.keys(stats.byType);
   const typeData = Object.values(stats.byType);
 
@@ -725,7 +725,7 @@ function renderAnalytics() {
       }]
     },
     options: {
-      plugins: {title: {display: true, text: 'Issues by Type', color: '#ffe170'}},
+      plugins: {title: {display: true, text: 'Issues by Type', color: 'var(--text-main)'}},
       responsive: false,
       legend: {display: false}
     }
@@ -746,7 +746,7 @@ function renderAnalytics() {
         backgroundColor: ['#11c79c','#ff7d5a']
       }]
     },
-    options: { plugins: {title:{display:true,text:'Status',color:'#ffe170'}}, responsive:false }
+    options: { plugins: {title:{display:true,text:'Status',color:'var(--text-main)'}}, responsive:false }
   });
 
   // Table: By Type
@@ -877,50 +877,50 @@ function renderCommunityTab(tab, data) {
   let html = "";
   if (tab === "Trending") {
     html = data.length ? data.map(item =>
-      `<div style="margin-bottom:14px;padding:12px;background:#1e2a5e;border-radius:8px;border-left:3px solid #22ff9b;">
-        <b style="color:#22ff9b;font-size:1.05em;">${item.title}</b> 
-        <div style="color:#ffd357;font-size:.92em;margin-top:4px;">by ${item.userName||item.user}</div>
-        <div style="color:#93baf8;font-size:.88em;margin-top:2px;">${formatTime(item.time)}</div>
+      `<div style="margin-bottom:14px;padding:12px;background:var(--bg-card);border-radius:8px;border-left:3px solid var(--primary);">
+        <b style="color:var(--primary);font-size:1.05em;">${item.title}</b> 
+        <div style="color:var(--text-main);font-size:.92em;margin-top:4px;">by ${item.userName||item.user}</div>
+        <div style="color:var(--text-muted);font-size:.88em;margin-top:2px;">${formatTime(item.time)}</div>
         ${item.image ? `<img src="${item.image}" style="width:100%;max-height:250px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
       </div>`
-    ).join('') : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>🔥 No trending posts yet!<br>Use # in your title to make posts trending.</i></div>";
+    ).join('') : "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>🔥 No trending posts yet!<br>Use # in your title to make posts trending.</i></div>";
   } 
   else if (tab === "Posts") {
     html = data.length ? data.map(item =>
-      `<div style="background:#232356;border-radius:12px;padding:14px 18px 13px;margin-bottom:17px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+      `<div style="background:var(--bg-card);border-radius:12px;padding:14px 18px 13px;margin-bottom:17px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
         <div style="display:flex;align-items:center;gap:13px;">
-          <img src='${item.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:46px;height:46px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+          <img src='${item.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:46px;height:46px;border-radius:50%;border:1.5px solid var(--text-main);object-fit:cover;">
           <div style="flex:1;">
             <b style="font-size:1.05em;">${item.userName||item.user}</b>
-            <div style="color:#ffd357;font-size:.93em;">${formatTime(item.time)}</div>
+            <div style="color:var(--text-main);font-size:.93em;">${formatTime(item.time)}</div>
           </div>
         </div>
         <div style="margin-top:10px;font-size:1.08em;font-weight:500;">${item.title}</div>
-        ${item.desc ? `<div style="color:#93baf8;font-size:1.01em;margin-top:6px;">${item.desc}</div>` : ""}
+        ${item.desc ? `<div style="color:var(--text-muted);font-size:1.01em;margin-top:6px;">${item.desc}</div>` : ""}
         ${item.image ? `<img src="${item.image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
       </div>`
-    ).join('') : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>📝 No posts yet!<br>Be the first to share something.</i></div>";
+    ).join('') : "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>📝 No posts yet!<br>Be the first to share something.</i></div>";
   } 
   else if (tab === "LeaderBoard") {
     html = data.length ? `
       <div style="overflow-x:auto;">
         <table style="width:100%;border-spacing:0 10px;">
           <thead>
-            <tr style="background:#232356;font-size:1em;">
-              <th style="color:#22ff9b;padding:6px 0;">Rank</th>
-              <th style="color:#22ff9b;padding:6px 0;">Name</th>
-              <th style="color:#ffd357;padding:6px 0;">Issues Solved</th>
-              <th style="color:#ffd357;padding:6px 0;">Points</th>
-              <th style="color:#ffd357;padding:6px 0;">Badge</th>
+            <tr style="background:var(--bg-card);font-size:1em;">
+              <th style="color:var(--primary);padding:6px 0;">Rank</th>
+              <th style="color:var(--primary);padding:6px 0;">Name</th>
+              <th style="color:var(--text-main);padding:6px 0;">Issues Solved</th>
+              <th style="color:var(--text-main);padding:6px 0;">Points</th>
+              <th style="color:var(--text-main);padding:6px 0;">Badge</th>
             </tr>
           </thead>
           <tbody>
             ${
               data.map((entry, idx) => `
-                <tr style="background:#1e2a5e;">
+                <tr style="background:var(--bg-card);">
                   <td style="text-align:center;font-weight:bold;">${idx+1}</td>
                   <td style="display:flex;align-items:center;gap:8px;">
-                    <img src='${entry.userPhoto||"https://via.placeholder.com/38"}' onerror="this.src='https://via.placeholder.com/38'" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+                    <img src='${entry.userPhoto||"https://via.placeholder.com/38"}' onerror="this.src='https://via.placeholder.com/38'" style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--text-main);object-fit:cover;">
                     <span style="font-weight:500;">${entry.user}</span>
                   </td>
                   <td style="text-align:center;">${entry.solved||entry.score||0}</td>
@@ -930,7 +930,7 @@ function renderCommunityTab(tab, data) {
                       idx === 0 ? "<span style='background:#ffd700;color:#000;padding:3px 13px;border-radius:12px;'><b>🥇 Gold</b></span>" : 
                       idx === 1 ? "<span style='background:#ccc;color:#000;padding:3px 13px;border-radius:12px;'><b>🥈 Silver</b></span>" : 
                       idx === 2 ? "<span style='background:#cd7f32;color:#fff;padding:3px 13px;border-radius:12px;'><b>🥉 Bronze</b></span>" :
-                      "<span style='background:#263075;color:#22ff9b;padding:3px 10px;border-radius:9px;font-size:.95em;'>Keep reporting!</span>"
+                      "<span style='background:var(--bg-card);color:var(--primary);padding:3px 10px;border-radius:9px;font-size:.95em;'>Keep reporting!</span>"
                     }
                   </td>
                 </tr>
@@ -940,50 +940,50 @@ function renderCommunityTab(tab, data) {
         </table>
       </div>
     `
-    : "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>🏆 No leaderboard entries yet!</i></div>";
+    : "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>🏆 No leaderboard entries yet!</i></div>";
   }
   else if (tab === "MyPosts") {
     html = `
-      <div style="background:#263075;border-radius:12px;padding:20px;margin-bottom:24px;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
-        <h3 style="margin:0 0 16px 0;color:#ffd357;font-size:1.2em;">✍️ Create New Post</h3>
-        <input type="text" id="post-title-input" placeholder="📌 Share your road issue or suggestion (use # like #pothole #traffic for trending)" style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid #ffd357;background:#1a1f4d;color:#fff;font-size:1em;box-sizing:border-box;">
-        <textarea id="post-desc-input" placeholder="💬 Tell us more... Where is it? What happened? How can it be fixed?" rows="4" style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid #ffd357;background:#1a1f4d;color:#fff;font-size:1em;resize:vertical;box-sizing:border-box;"></textarea>
+      <div style="background:var(--bg-card);border-radius:12px;padding:20px;margin-bottom:24px;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+        <h3 style="margin:0 0 16px 0;color:var(--text-main);font-size:1.2em;">✍️ Create New Post</h3>
+        <input type="text" id="post-title-input" placeholder="📌 Share your road issue or suggestion (use # like #pothole #traffic for trending)" style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid var(--text-main);background:var(--bg-dark);color:#fff;font-size:1em;box-sizing:border-box;">
+        <textarea id="post-desc-input" placeholder="💬 Tell us more... Where is it? What happened? How can it be fixed?" rows="4" style="width:100%;padding:12px;margin-bottom:14px;border-radius:8px;border:1.5px solid var(--text-main);background:var(--bg-dark);color:#fff;font-size:1em;resize:vertical;box-sizing:border-box;"></textarea>
         <div style="margin-bottom:14px;">
-          <label for="post-image-input" style="display:inline-block;background:#1e2a5e;color:#ffd357;padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid #ffd357;font-size:0.95em;transition:all 0.3s;">
+          <label for="post-image-input" style="display:inline-block;background:var(--bg-card);color:var(--text-main);padding:10px 18px;border-radius:8px;cursor:pointer;border:1.5px solid var(--text-main);font-size:0.95em;transition:all 0.3s;">
             📷 Add Photo (Optional)
           </label>
           <input type="file" id="post-image-input" accept="image/*" style="display:none;">
           <div id="image-preview" style="margin-top:12px;display:none;">
-            <img id="preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:2px solid #ffd357;">
-            <button onclick="removeImagePreview()" style="display:block;margin-top:8px;background:#ff4444;color:#fff;padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:0.9em;">
+            <img id="preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:2px solid var(--text-main);">
+            <button onclick="removeImagePreview()" style="display:block;margin-top:8px;background:var(--danger);color:#fff;padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:0.9em;">
               ❌ Remove Image
             </button>
           </div>
         </div>
-        <button onclick="submitPost()" style="background:#22ff9b;color:#000;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:1em;transition:all 0.3s;box-shadow:0 2px 5px rgba(34,255,155,0.3);">
+        <button onclick="submitPost()" style="background:var(--primary);color:#000;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:1em;transition:all 0.3s;box-shadow:0 2px 5px rgba(34,255,155,0.3);">
           📤 Post
         </button>
       </div>
-      <h3 style="color:#ffd357;margin-bottom:16px;font-size:1.15em;">📝 Your Posts</h3>
+      <h3 style="color:var(--text-main);margin-bottom:16px;font-size:1.15em;">📝 Your Posts</h3>
     `;
 
     if (data.length) {
       html += data.map(post =>
-        `<div style="background:#263075;border-radius:12px;padding:15px 18px 13px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+        `<div style="background:var(--bg-card);border-radius:12px;padding:15px 18px 13px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
           <div style="display:flex;align-items:center;gap:12px;">
-            <img src='${post.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:42px;height:42px;border-radius:50%;border:1.5px solid #ffd357;object-fit:cover;">
+            <img src='${post.userPhoto||"https://via.placeholder.com/50"}' onerror="this.src='https://via.placeholder.com/50'" style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--text-main);object-fit:cover;">
             <div style="flex:1;">
               <b style="font-size:1.02em;">${post.userName||post.user}</b>
-              <span style="color:#ffd357;font-size:.93em;margin-left:10px;">${formatTime(post.time)}</span>
+              <span style="color:var(--text-main);font-size:.93em;margin-left:10px;">${formatTime(post.time)}</span>
             </div>
           </div>
           <div style="margin-top:10px;font-size:1.08em;font-weight:500;">${post.title}</div>
-          ${post.desc ? `<div style="color:#bacfff;font-size:.98em;margin-top:5px;">${post.desc}</div>` : ""}
+          ${post.desc ? `<div style="color:var(--text-muted);font-size:.98em;margin-top:5px;">${post.desc}</div>` : ""}
           ${post.image ? `<img src="${post.image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;margin-top:10px;">` : ""}
         </div>`
       ).join('');
     } else {
-      html += "<div style='text-align:center;color:#ffd357;padding:40px 20px;'><i>✨ You haven't posted anything yet!<br>Share your thoughts above.</i></div>";
+      html += "<div style='text-align:center;color:var(--text-main);padding:40px 20px;'><i>✨ You haven't posted anything yet!<br>Share your thoughts above.</i></div>";
     }
   }
   const contentDiv = document.getElementById('community-tab-contents');
@@ -1387,7 +1387,7 @@ document.getElementById("admin-menu-notify").onclick = () => {
 
 
 //Profile
-const USERNAME = "admin"; // Or actual admin username if dynamic
+const USERNAME = localStorage.getItem('username') || "admin"; 
 let profileData = {};
 
 function refreshProfile() {

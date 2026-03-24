@@ -403,7 +403,24 @@ function saveProfiles(profilesArr) {
 app.get('/api/profile/:username', (req, res) => {
   const profiles = loadProfiles();
   const profile = profiles.find(p => p.username === req.params.username);
-  profile ? res.json(profile) : res.status(404).json({});
+  
+  if (profile) {
+    res.json(profile);
+  } else {
+    const users = loadUsers();
+    const user = users.find(u => u.username.toLowerCase() === req.params.username.toLowerCase());
+    if (user) {
+      res.json({
+        username: user.username,
+        name: user.name || user.username,
+        email: user.email || '',
+        dob: user.dob || '',
+        photo: user.photo || ''
+      });
+    } else {
+      res.status(404).json({});
+    }
+  }
 });
 
 // POST profile update/save
