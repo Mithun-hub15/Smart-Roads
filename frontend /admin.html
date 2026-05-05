@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartRoad — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080b18;
+      --surface: #0f1326;
+      --surface2: #141830;
+      --border: rgba(255,255,255,0.07);
+      --gold: #f5c842;
+      --gold-dim: rgba(245,200,66,0.12);
+      --blue: #4a9eff;
+      --green: #34d399;
+      --red: #f87171;
+      --amber: #fbbf24;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --sidebar-w: 230px;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex; min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 100; overflow-y: auto;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-brand {
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 800; color: var(--gold);
+    }
+
+    .logo-sq {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--gold); display: flex; align-items: center;
+      justify-content: center; font-size: 16px;
+    }
+
+    .admin-badge {
+      background: rgba(248,113,113,0.15);
+      border: 1px solid rgba(248,113,113,0.3);
+      color: var(--red);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 0.72rem; font-weight: 600;
+      margin-top: 10px; display: inline-block;
+    }
+
+    .sidebar-nav { padding: 16px 8px; flex: 1; }
+
+    .nav-label {
+      font-size: 0.66rem; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: #cbd5e1;
+      padding: 0 10px; margin: 16px 0 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 10px;
+      border: none; background: none; width: 100%;
+      text-align: left; cursor: pointer;
+      color: #94a3b8; font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 500;
+      transition: all 0.18s; position: relative;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .nav-item.active { background: var(--gold-dim); color: var(--gold); }
+    .nav-item.active::before {
+      content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+      width: 3px; background: var(--gold); border-radius: 0 3px 3px 0;
+    }
+
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+    .logout-btn {
+      margin: 16px 8px;
+      padding: 10px 12px; border-radius: 10px;
+      border: 1px solid rgba(248,113,113,0.2);
+      background: rgba(248,113,113,0.06);
+      color: var(--red); width: calc(100% - 16px);
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      cursor: pointer; transition: all 0.18s;
+    }
+    .logout-btn:hover { background: rgba(248,113,113,0.14); }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; padding: 28px; min-height: 100vh; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-header { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+    .section-sub { color: #cbd5e1; font-size: 0.9rem; }
+
+    /* ── Stat Cards ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 18px;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: rgba(245,200,66,0.3); }
+    .stat-card .val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; }
+    .stat-card .lbl { font-size: 0.78rem; color: #cbd5e1; margin-top: 4px; }
+    .stat-card .trend { font-size: 0.78rem; margin-top: 8px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .filter-select {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; outline: none; cursor: pointer;
+    }
+    .filter-select option { background: #1a1f3a; }
+
+    .search-input {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--gold); }
+    .search-input::placeholder { color: #cbd5e1; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .data-table th {
+      text-align: left; padding: 12px 14px;
+      background: var(--surface2); color: #cbd5e1;
+      font-size: 0.74rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── Badges ── */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; }
+    .badge-pending { background: rgba(251,191,36,0.15); color: var(--amber); }
+    .badge-progress { background: rgba(74,158,255,0.15); color: var(--blue); }
+    .badge-resolved { background: rgba(52,211,153,0.15); color: var(--green); }
+
+    /* ── Action buttons ── */
+    .action-btn {
+      padding: 5px 12px; border-radius: 7px; border: none;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-status { background: rgba(74,158,255,0.15); color: var(--blue); }
+    .btn-status:hover { background: rgba(74,158,255,0.25); }
+    .btn-del { background: rgba(248,113,113,0.15); color: var(--red); }
+    .btn-del:hover { background: rgba(248,113,113,0.25); }
+    .btn-resolve { background: rgba(52,211,153,0.15); color: var(--green); }
+    .btn-resolve:hover { background: rgba(52,211,153,0.25); }
+
+    .btn-gold {
+      background: var(--gold); color: #05070f;
+      padding: 9px 18px; border-radius: 10px; border: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      font-weight: 600; cursor: pointer; transition: all 0.18s;
+    }
+    .btn-gold:hover { box-shadow: 0 4px 16px rgba(245,200,66,0.3); }
+
+    /* ── Map ── */
+    .map-box { height: 450px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+
+    /* ── Charts ── */
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .chart-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .chart-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; }
+
+    /* ── AI Insights ── */
+    .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .insight-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      border-left: 3px solid var(--gold);
+    }
+    .insight-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .insight-val { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--gold); }
+    .insight-lbl { font-size: 0.8rem; color: #cbd5e1; margin-top: 4px; }
+
+    /* ── Profile ── */
+    .profile-wrap { display: grid; grid-template-columns: 200px 1fr; gap: 20px; max-width: 700px; }
+    .profile-photo { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); box-shadow: 0 0 20px rgba(245,200,66,0.25); }
+    .profile-photo-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 500; }
+    .field input, .field select {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 13px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--gold); }
+
+    /* ── Image modal ── */
+    #img-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.9); z-index: 9999;
+      align-items: center; justify-content: center;
+    }
+
+    /* ── Mobile ── */
+    .hamburger {
+      display: none; position: fixed; top: 16px; left: 16px;
+      z-index: 200; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px; cursor: pointer; font-size: 18px;
+    }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+
+    @media (max-width: 900px) {
+      .charts-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; padding: 20px 14px; padding-top: 60px; }
+      .hamburger { display: flex; }
+      .profile-wrap { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 420px) {
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="logo-sq">🛣️</div> SmartRoad
+    </div>
+    <div class="admin-badge">🔐 Admin Panel</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Reports</div>
+    <button class="nav-item active" data-section="issues"><i class="nav-icon fas fa-list"></i> All Issues</button>
+    <button class="nav-item" data-section="map"><i class="nav-icon fas fa-map"></i> Live Map</button>
+    <button class="nav-item" data-section="heatmap"><i class="nav-icon fas fa-fire"></i> Heatmap</button>
+
+    <div class="nav-label">Intelligence</div>
+    <button class="nav-item" data-section="analytics"><i class="nav-icon fas fa-chart-bar"></i> Analytics</button>
+    <button class="nav-item" data-section="ai"><i class="nav-icon fas fa-robot"></i> AI Insights</button>
+
+    <div class="nav-label">Management</div>
+    <button class="nav-item" data-section="community"><i class="nav-icon fas fa-comments"></i> Community</button>
+    <button class="nav-item" data-section="notify"><i class="nav-icon fas fa-bell"></i> Notifications</button>
+
+    <div class="nav-label">Account</div>
+    <button class="nav-item" data-section="profile"><i class="nav-icon fas fa-user-circle"></i> Profile</button>
+  </nav>
+
+  <button class="logout-btn" onclick="logout()">Sign Out →</button>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Issues -->
+  <div id="sec-issues" class="section active">
+    <div class="section-header">
+      <div>
+        <div class="section-title">📋 All Reported Issues</div>
+        <div class="section-sub">Manage and resolve citizen road reports</div>
+      </div>
+      <button class="btn-gold" onclick="loadIssues()">↺ Refresh</button>
+    </div>
+
+    <div class="stat-grid" id="admin-stats">
+      <div class="stat-card"><div class="val" id="s-total">—</div><div class="lbl">Total Reports</div></div>
+      <div class="stat-card"><div class="val" id="s-pending" style="color:var(--amber);">—</div><div class="lbl">Pending</div></div>
+      <div class="stat-card"><div class="val" id="s-progress" style="color:var(--blue);">—</div><div class="lbl">In Progress</div></div>
+      <div class="stat-card"><div class="val" id="s-resolved" style="color:var(--green);">—</div><div class="lbl">Resolved</div></div>
+    </div>
+
+    <div class="card">
+      <div class="filter-bar">
+        <input class="search-input" id="search-in" placeholder="🔍 Search by title, type, user…" oninput="filterTable()"/>
+        <select class="filter-select" id="status-filter" onchange="filterTable()">
+          <option value="">All Status</option>
+          <option>Pending</option>
+          <option>In Progress</option>
+          <option>Resolved</option>
+        </select>
+        <select class="filter-select" id="type-filter" onchange="filterTable()">
+          <option value="">All Types</option>
+          <option>Pothole</option>
+          <option>Waterlogging</option>
+          <option>Unpaved Road</option>
+          <option>Accident Spot</option>
+          <option>Garbage</option>
+          <option>Broken Streetlight</option>
+          <option>Road Obstruction</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th><th>Type</th><th>Reporter</th>
+              <th>Location</th><th>Date</th><th>Status</th>
+              <th>Photo</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="issues-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Map -->
+  <div id="sec-map" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🗺️ Live Issue Map</div>
+        <div class="section-sub">All reported locations across the city</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="filter-bar" style="margin-bottom:14px;">
+        <span style="color:var(--muted);font-size:0.85rem;">🟠 Pending</span>
+        <span style="color:var(--muted);font-size:0.85rem;">🔵 In Progress</span>
+        <span style="color:var(--muted);font-size:0.85rem;">🟢 Resolved</span>
+      </div>
+      <div id="live-map" class="map-box"></div>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <div id="sec-heatmap" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🔥 Issue Heatmap</div>
+        <div class="section-sub">Density map of all road problems</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="filter-bar" id="admin-heat-filters" style="margin-bottom:14px;flex-wrap:wrap;gap:8px;"></div>
+      <div id="heat-map" class="map-box"></div>
+    </div>
+  </div>
+
+  <!-- Analytics -->
+  <div id="sec-analytics" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">📊 Analytics</div>
+        <div class="section-sub">Visual breakdown of all reports</div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Issues by Type</div>
+        <canvas id="type-chart" height="260"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Status Distribution</div>
+        <canvas id="status-chart" height="260"></canvas>
+      </div>
+    </div>
+    <div class="card" style="overflow-x:auto;margin-top:4px;">
+      <table class="data-table" id="analytics-table">
+        <thead><tr><th>Type</th><th>Count</th><th>% of Total</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AI Insights -->
+  <div id="sec-ai" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🤖 AI Insights</div>
+        <div class="section-sub">Intelligent analysis of road issue patterns</div>
+      </div>
+    </div>
+    <div class="insight-grid" id="ai-grid"></div>
+    <div class="card" id="ai-recs"></div>
+  </div>
+
+  <!-- Community -->
+  <div id="sec-community" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">💬 Community Posts</div>
+        <div class="section-sub">Monitor citizen discussions</div>
+      </div>
+    </div>
+    <div id="comm-feed"></div>
+  </div>
+
+  <!-- Notifications -->
+  <div id="sec-notify" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🔔 System Notifications</div>
+        <div class="section-sub">Real-time alerts and updates</div>
+      </div>
+    </div>
+    <div class="card" id="notify-list">Loading…</div>
+  </div>
+
+  <!-- Profile -->
+  <div id="sec-profile" class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">👤 Admin Profile</div>
+        <div class="section-sub">Your account settings</div>
+      </div>
+    </div>
+    <div class="profile-wrap">
+      <div class="card profile-photo-col">
+        <img id="p-photo" class="profile-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f5c842'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-size='48' fill='%23050a0f'%3EA%3C/text%3E%3C/svg%3E"/>
+        <input type="file" id="p-upload" accept="image/*" style="display:none;" onchange="previewPhoto(this)"/>
+        <button style="background:transparent;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:0.82rem;width:100%;" onclick="document.getElementById('p-upload').click()">Change Photo</button>
+      </div>
+      <div class="card">
+        <div id="p-saved" style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--green);padding:10px 14px;border-radius:8px;font-size:0.88rem;display:none;margin-bottom:12px;">✅ Profile updated!</div>
+        <div class="field"><label>Username</label><input id="p-username" disabled style="opacity:0.6;"/></div>
+        <div class="field"><label>Email</label><input id="p-email" type="email" disabled/></div>
+        <div class="field"><label>Date of Birth</label><input id="p-dob" type="date" disabled/></div>
+        <div class="field"><label>Gender</label>
+          <select id="p-gender" disabled>
+            <option value="">Select…</option><option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Phone (10 digits)</label><input id="p-phone" disabled maxlength="10" inputmode="numeric" pattern="[0-9]{10}"/></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+          <button class="btn-gold" id="p-edit-btn" onclick="enableEdit()">Edit Profile</button>
+          <button class="btn-gold" id="p-save-btn" style="display:none;" onclick="saveProfile()">Save</button>
+          <button style="background:transparent;border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 18px;cursor:pointer;" id="p-cancel-btn" style="display:none;" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Image Modal -->
+<div id="img-modal" onclick="this.style.display='none'">
+  <img id="modal-img" style="max-width:90%;max-height:85vh;border-radius:12px;"/>
+</div>
+
+<script>
+// ── Auth ──
+const ADMIN = localStorage.getItem('username');
+if (!ADMIN) { alert('Admin access required'); window.location.href = 'index.html'; }
+
+let allIssues = [];
+let typeChart, statusChart;
+let liveMap, heatMap, heatLayer;
+
+// Phone validation - allow only 10 digits
+document.addEventListener('DOMContentLoaded', () => {
+  const phoneField = document.getElementById('p-phone');
+  if (phoneField) {
+    phoneField.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+  }
+});
+
+// ── Navigation ──
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    const s = btn.dataset.section;
+    document.getElementById('sec-' + s).classList.add('active');
+    if (s === 'map') initLiveMap();
+    if (s === 'heatmap') initHeatmap();
+    if (s === 'analytics') renderCharts();
+    if (s === 'ai') renderAI();
+    if (s === 'community') loadCommunity();
+    if (s === 'notify') loadNotifications();
+    if (s === 'profile') loadProfile();
+    closeSidebar();
+  });
+});
+
+// ── Load Issues ──
+async function loadIssues() {
+  try {
+    const [issRes, statsRes] = await Promise.all([
+      fetch('http://localhost:3300/api/issues'),
+      fetch('http://localhost:3300/api/stats')
+    ]);
+    allIssues = await issRes.json();
+    const stats = await statsRes.json();
+
+    document.getElementById('s-total').textContent = stats.total;
+    document.getElementById('s-pending').textContent = stats.pending;
+    document.getElementById('s-progress').textContent = stats.progress;
+    document.getElementById('s-resolved').textContent = stats.resolved;
+
+    renderTable(allIssues);
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--red);padding:24px;">Backend not reachable. Start server on port 3300.</td></tr>';
+  }
+}
+
+function renderTable(issues) {
+  const tbody = document.getElementById('issues-body');
+  if (!issues.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#cbd5e1;padding:24px;">No issues found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = issues.map(i => {
+    const bc = i.status === 'Pending' ? 'badge-pending' : i.status === 'In Progress' ? 'badge-progress' : 'badge-resolved';
+    const date = new Date(i.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' });
+    const imgHtml = i.image_url
+      ? `<img src="http://localhost:3300${i.image_url}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;cursor:pointer;" onclick="viewImg('http://localhost:3300${i.image_url}')">`
+      : '—';
+    const loc = i.address ? i.address.split(',').slice(0,2).join(',') : `${Number(i.latitude||0).toFixed(3)},${Number(i.longitude||0).toFixed(3)}`;
+    return `
+      <tr>
+        <td style="max-width:180px;font-weight:500;">${i.title}</td>
+        <td><span style="background:var(--gold-dim);color:var(--gold);padding:2px 8px;border-radius:20px;font-size:0.74rem;">${i.type}</span></td>
+        <td>${i.username || '—'}</td>
+        <td style="max-width:140px;font-size:0.78rem;color:#cbd5e1;" title="${i.address||''}">${loc}</td>
+        <td>${date}</td>
+        <td><span class="badge ${bc}">${i.status}</span></td>
+        <td>${imgHtml}</td>
+        <td style="white-space:nowrap;">
+          <button class="action-btn btn-status" onclick="setStatus(${i.id},'In Progress')">▶</button>
+          <button class="action-btn btn-resolve" onclick="setStatus(${i.id},'Resolved')">✓</button>
+          <button class="action-btn btn-del" onclick="deleteIssue(${i.id})">✕</button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function filterTable() {
+  const q = document.getElementById('search-in').value.toLowerCase();
+  const st = document.getElementById('status-filter').value;
+  const ty = document.getElementById('type-filter').value;
+  const filtered = allIssues.filter(i =>
+    (!q || [i.title, i.type, i.username].some(f => f?.toLowerCase().includes(q))) &&
+    (!st || i.status === st) &&
+    (!ty || i.type === ty)
+  );
+  renderTable(filtered);
+}
+
+async function setStatus(id, status) {
+  try {
+    await fetch(`http://localhost:3300/api/issues/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    loadIssues();
+  } catch {}
+}
+
+async function deleteIssue(id) {
+  if (!confirm('Delete this issue permanently?')) return;
+  try {
+    await fetch(`http://localhost:3300/api/issues/${id}`, { method: 'DELETE' });
+    loadIssues();
+  } catch {}
+}
+
+// ── Live Map ──
+async function initLiveMap() {
+  if (liveMap) { liveMap.invalidateSize(); return; }
+  liveMap = L.map('live-map').setView([13.08, 80.27], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(liveMap);
+  if (!allIssues.length) { const r = await fetch('http://localhost:3300/api/issues'); allIssues = await r.json(); }
+  allIssues.forEach(i => {
+    if (!i.latitude || !i.longitude) return;
+    const color = i.status === 'Resolved' ? '#34d399' : i.status === 'In Progress' ? '#4a9eff' : '#f5c842';
+    L.circleMarker([i.latitude, i.longitude], { radius: 9, color, fillColor: color, fillOpacity: 0.85 })
+      .addTo(liveMap)
+      .bindPopup(`<b>${i.title}</b><br>Type: ${i.type}<br>Status: ${i.status}<br>Reporter: ${i.username}<br><small>${i.address||''}</small>`);
+  });
+}
+
+// ── Heatmap ──
+const heatTypes = ['Pothole','Waterlogging','Unpaved Road','Garbage','Broken Streetlight','Accident Spot','Road Obstruction'];
+
+async function initHeatmap() {
+  // Build filter chips
+  const fc = document.getElementById('admin-heat-filters');
+  if (!fc.innerHTML) {
+    fc.innerHTML = heatTypes.map(t => `<button class="action-btn btn-status" data-ht="${t}" onclick="toggleHeatType(this)" style="margin:2px;">${t}</button>`).join('');
+    document.querySelectorAll('[data-ht]').forEach(b => b.style.background = 'rgba(245,200,66,0.15)');
+  }
+
+  if (heatMap) { heatMap.invalidateSize(); renderHeatLayer(); return; }
+  heatMap = L.map('heat-map').setView([13.08, 80.27], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(heatMap);
+  if (!allIssues.length) { const r = await fetch('http://localhost:3300/api/issues'); allIssues = await r.json(); }
+  renderHeatLayer();
+}
+
+let activeHeatTypes = new Set(heatTypes);
+function toggleHeatType(btn) {
+  const t = btn.dataset.ht;
+  if (activeHeatTypes.has(t)) { activeHeatTypes.delete(t); btn.style.opacity = '0.4'; }
+  else { activeHeatTypes.add(t); btn.style.opacity = '1'; }
+  renderHeatLayer();
+}
+
+function renderHeatLayer() {
+  const pts = allIssues
+    .filter(i => i.latitude && i.longitude && (activeHeatTypes.size === 0 || activeHeatTypes.has(i.type)))
+    .map(i => [parseFloat(i.latitude), parseFloat(i.longitude), 1]);
+  if (heatLayer) heatMap.removeLayer(heatLayer);
+  if (pts.length) heatLayer = L.heatLayer(pts, { radius: 35, blur: 20 }).addTo(heatMap);
+}
+
+// ── Charts ──
+async function renderCharts() {
+  if (!allIssues.length) { const r = await fetch('http://localhost:3300/api/issues'); allIssues = await r.json(); }
+
+  // By type
+  const typeCounts = {};
+  const statusCounts = { Pending: 0, 'In Progress': 0, Resolved: 0 };
+  allIssues.forEach(i => {
+    typeCounts[i.type] = (typeCounts[i.type] || 0) + 1;
+    if (statusCounts[i.status] !== undefined) statusCounts[i.status]++;
+  });
+
+  const total = allIssues.length;
+  const colors = ['#f5c842','#4a9eff','#34d399','#f87171','#a78bfa','#fb923c','#38bdf8','#e879f9'];
+  const typeLabels = Object.keys(typeCounts);
+  const typeVals = Object.values(typeCounts);
+
+  if (typeChart) typeChart.destroy();
+  typeChart = new Chart(document.getElementById('type-chart'), {
+    type: 'doughnut',
+    data: { labels: typeLabels, datasets: [{ data: typeVals, backgroundColor: colors, borderWidth: 0 }] },
+    options: { plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'DM Sans' } } } }, cutout: '60%' }
+  });
+
+  if (statusChart) statusChart.destroy();
+  statusChart = new Chart(document.getElementById('status-chart'), {
+    type: 'pie',
+    data: {
+      labels: ['Pending', 'In Progress', 'Resolved'],
+      datasets: [{ data: [statusCounts.Pending, statusCounts['In Progress'], statusCounts.Resolved], backgroundColor: ['#fbbf24','#4a9eff','#34d399'], borderWidth: 0 }]
+    },
+    options: { plugins: { legend: { labels: { color: '#e2e8f0', font: { family: 'DM Sans' } } } } }
+  });
+
+  // Table
+  const tbody = document.querySelector('#analytics-table tbody');
+  tbody.innerHTML = typeLabels.map((t,i) => `
+    <tr>
+      <td>${t}</td>
+      <td>${typeVals[i]}</td>
+      <td>${total ? ((typeVals[i]/total)*100).toFixed(1) + '%' : '—'}</td>
+    </tr>`).join('');
+}
+
+// ── AI Insights ──
+async function renderAI() {
+  if (!allIssues.length) { const r = await fetch('http://localhost:3300/api/issues'); allIssues = await r.json(); }
+
+  const total = allIssues.length;
+  const resolved = allIssues.filter(i => i.status === 'Resolved').length;
+  const resRate = total ? ((resolved / total) * 100).toFixed(1) : 0;
+
+  const typeCounts = {};
+  allIssues.forEach(i => typeCounts[i.type] = (typeCounts[i.type] || 0) + 1);
+  const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0];
+
+  // Avg resolution time (mock)
+  const avgTime = '3.2 days';
+
+  document.getElementById('ai-grid').innerHTML = `
+    <div class="insight-card">
+      <div class="insight-icon">🕳️</div>
+      <div class="insight-val">${topType ? topType[0] : '—'}</div>
+      <div class="insight-lbl">Most Reported Issue</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">✅</div>
+      <div class="insight-val">${resRate}%</div>
+      <div class="insight-lbl">Resolution Rate</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">⏱️</div>
+      <div class="insight-val">${avgTime}</div>
+      <div class="insight-lbl">Avg. Resolution Time</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">📈</div>
+      <div class="insight-val">${total}</div>
+      <div class="insight-lbl">Total Reports Analyzed</div>
+    </div>
+  `;
+
+  document.getElementById('ai-recs').innerHTML = `
+    <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:16px;">🤖 Smart Recommendations</div>
+    ${topType ? `<p style="color:#cbd5e1;font-size:0.9rem;margin-bottom:12px;">🚧 <b style="color:var(--text);">${topType[0]}</b> is the most reported issue with <b style="color:var(--gold);">${topType[1]} cases</b>. Prioritize patching campaigns in high-density zones.</p>` : ''}
+    <p style="color:#cbd5e1;font-size:0.9rem;margin-bottom:12px;">📊 Resolution rate is <b style="color:var(--text);">${resRate}%</b>. ${parseFloat(resRate) < 60 ? '⚠️ Needs improvement — consider deploying more maintenance teams.' : '✅ Good performance maintained.'}</p>
+    <p style="color:#cbd5e1;font-size:0.9rem;">🔔 Set up automated SMS alerts to reporters when issue status changes to improve citizen trust and engagement.</p>
+  `;
+}
+
+// ── Community ──
+async function loadCommunity() {
+  const feed = document.getElementById('comm-feed');
+  try {
+    const res = await fetch('http://localhost:3300/api/community');
+    const posts = await res.json();
+    if (!posts.length) { feed.innerHTML = '<div class="card" style="color:#cbd5e1;">No community posts yet.</div>'; return; }
+    feed.innerHTML = posts.map(p => `
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--gold);color:#05070f;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;">${p.username[0].toUpperCase()}</div>
+          <div>
+            <div style="font-weight:600;font-size:0.9rem;">${p.username}</div>
+            <div style="color:#cbd5e1;font-size:0.76rem;">${timeAgo(p.created_at)}</div>
+          </div>
+          <div style="margin-left:auto;color:#cbd5e1;font-size:0.82rem;">👍 ${p.upvotes}</div>
+        </div>
+        <div style="color:#cbd5e1;font-size:0.92rem;">${p.content}</div>
+      </div>`).join('');
+  } catch { feed.innerHTML = '<div class="card" style="color:var(--red);">Could not load posts</div>'; }
+}
+
+// ── Notifications ──
+function loadNotifications() {
+  document.getElementById('notify-list').innerHTML = [
+    { icon: '🚧', t: 'New Issue Reported', d: 'A pothole reported near Chennai Central', time: 'Just now' },
+    { icon: '✅', t: 'Issue Resolved', d: 'Waterlogging on Anna Salai marked resolved', time: '1h ago' },
+    { icon: '⚠️', t: 'High Priority Alert', d: '5 accidents reported in the T. Nagar area this week', time: '3h ago' },
+  ].map(n => `
+    <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:1.4rem;">${n.icon}</div>
+      <div>
+        <div style="font-weight:600;font-size:0.9rem;margin-bottom:3px;">${n.t}</div>
+        <div style="color:#cbd5e1;font-size:0.83rem;">${n.d}</div>
+        <div style="color:#cbd5e1;font-size:0.74rem;margin-top:4px;">${n.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Profile ──
+let profileCache = {};
+async function loadProfile() {
+  try {
+    const res = await fetch(`http://localhost:3300/api/profile/${ADMIN}`);
+    profileCache = await res.json();
+    document.getElementById('p-username').value = profileCache.username || ADMIN;
+    document.getElementById('p-email').value = profileCache.email || '';
+    document.getElementById('p-dob').value = profileCache.dob ? profileCache.dob.split('T')[0] : '';
+    document.getElementById('p-gender').value = profileCache.gender || '';
+    document.getElementById('p-phone').value = profileCache.phone || '';
+    if (profileCache.photo) document.getElementById('p-photo').src = profileCache.photo;
+  } catch {}
+}
+
+function enableEdit() {
+  ['p-email','p-gender','p-phone'].forEach(id => document.getElementById(id).disabled = false);
+  document.getElementById('p-edit-btn').style.display = 'none';
+  document.getElementById('p-save-btn').style.display = '';
+  document.getElementById('p-cancel-btn').style.display = '';
+}
+
+function cancelEdit() {
+  ['p-email','p-gender','p-phone'].forEach(id => document.getElementById(id).disabled = true);
+  document.getElementById('p-edit-btn').style.display = '';
+  document.getElementById('p-save-btn').style.display = 'none';
+  document.getElementById('p-cancel-btn').style.display = 'none';
+}
+
+async function saveProfile() {
+  try {
+    await fetch(`http://localhost:3300/api/profile/${ADMIN}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('p-email').value,
+        dob: document.getElementById('p-dob').value,
+        gender: document.getElementById('p-gender').value,
+        phone: document.getElementById('p-phone').value,
+        photo: profileCache.photo || ''
+      })
+    });
+    const m = document.getElementById('p-saved');
+    m.style.display = 'block';
+    setTimeout(() => m.style.display = 'none', 2000);
+    cancelEdit();
+  } catch {}
+}
+
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('p-photo').src = e.target.result; profileCache.photo = e.target.result; };
+  reader.readAsDataURL(file);
+}
+
+// ── Utils ──
+function viewImg(src) {
+  document.getElementById('modal-img').src = src;
+  document.getElementById('img-modal').style.display = 'flex';
+}
+
+function timeAgo(ts) {
+  const d = Math.floor((Date.now() - new Date(ts)) / 60000);
+  if (d < 1) return 'Just now';
+  if (d < 60) return `${d}m ago`;
+  if (d < 1440) return `${Math.floor(d/60)}h ago`;
+  return `${Math.floor(d/1440)}d ago`;
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+// ── Init ──
+window.onload = loadIssues;
+</script>
+</body>
+</html>

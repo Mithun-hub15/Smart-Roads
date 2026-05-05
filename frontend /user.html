@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartRoad — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080b18;
+      --surface: #0f1326;
+      --surface2: #141830;
+      --border: rgba(255,255,255,0.07);
+      --gold: #f5c842;
+      --gold-dim: rgba(245,200,66,0.12);
+      --blue: #4a9eff;
+      --green: #34d399;
+      --red: #f87171;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --sidebar-w: 240px;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 100; overflow-y: auto;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-brand {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .logo-sq {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--gold); display: flex; align-items: center;
+      justify-content: center; font-size: 16px;
+      box-shadow: 0 0 16px rgba(245,200,66,0.3);
+    }
+
+    .user-chip {
+      background: var(--gold-dim);
+      border: 1px solid rgba(245,200,66,0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gold); display: flex; align-items: center;
+      justify-content: center; font-weight: 700; color: #05070f;
+      font-size: 14px; flex-shrink: 0;
+    }
+
+    .user-name { font-size: 0.85rem; font-weight: 600; color: var(--gold); }
+    .user-role { font-size: 0.72rem; color: #cbd5e1; }
+
+    .sidebar-nav { padding: 16px 10px; flex: 1; }
+
+    .nav-label {
+      font-size: 0.67rem; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: #cbd5e1;
+      padding: 0 10px; margin: 16px 0 8px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 10px;
+      border: none; background: none; width: 100%;
+      text-align: left; cursor: pointer;
+      color: #94a3b8; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 500;
+      transition: all 0.18s; position: relative;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .nav-item.active { background: var(--gold-dim); color: var(--gold); }
+    .nav-item.active::before {
+      content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+      width: 3px; background: var(--gold); border-radius: 0 3px 3px 0;
+    }
+
+    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+    .logout-btn {
+      margin: 16px 10px;
+      padding: 10px 12px; border-radius: 10px;
+      border: 1px solid rgba(248,113,113,0.2);
+      background: rgba(248,113,113,0.06);
+      color: var(--red); width: calc(100% - 20px);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      cursor: pointer; transition: all 0.18s;
+    }
+    .logout-btn:hover { background: rgba(248,113,113,0.12); }
+
+    /* ── Main Content ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1; padding: 28px;
+      min-height: 100vh;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-header {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .section-sub { color: #cbd5e1; font-size: 0.9rem; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    /* ── Stat row ── */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px; margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: rgba(245,200,66,0.3); }
+    .stat-card .val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem; font-weight: 800;
+      color: var(--gold);
+    }
+    .stat-card .lbl { font-size: 0.78rem; color: #cbd5e1; margin-top: 4px; }
+
+    /* ── Form ── */
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 500; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(245,200,66,0.08);
+    }
+    .field input::placeholder, .field textarea::placeholder { color: #374151; }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field select option { background: #1a1f3a; }
+
+    .btn {
+      padding: 11px 24px;
+      border-radius: 10px; border: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-gold { background: var(--gold); color: #05070f; }
+    .btn-gold:hover { box-shadow: 0 6px 20px rgba(245,200,66,0.35); transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Map container ── */
+    .map-box {
+      height: 400px; border-radius: var(--radius);
+      overflow: hidden; border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    /* ── Table ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .data-table th {
+      text-align: left; padding: 12px 14px;
+      background: var(--surface2);
+      color: #cbd5e1; font-size: 0.76rem;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 0.76rem; font-weight: 600;
+    }
+    .badge-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
+    .badge-progress { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .badge-resolved { background: rgba(52,211,153,0.15); color: #34d399; }
+
+    /* ── Profile ── */
+    .profile-wrap {
+      display: grid; grid-template-columns: 220px 1fr; gap: 24px;
+      max-width: 740px;
+    }
+
+    .profile-photo-col {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px;
+    }
+
+    .profile-photo {
+      width: 120px; height: 120px; border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 20px rgba(245,200,66,0.25);
+    }
+
+    /* ── SOS ── */
+    .sos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .sos-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      text-align: center; transition: all 0.2s;
+    }
+    .sos-card:hover { border-color: var(--red); }
+    .sos-card .sos-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem; font-weight: 800; color: var(--red);
+      text-decoration: none; display: block;
+    }
+    .sos-card .sos-lbl { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── Weather ── */
+    .weather-cards { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+    .weather-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px 14px; min-width: 110px;
+      text-align: center; flex-shrink: 0;
+    }
+    .weather-card .day { font-size: 0.78rem; color: #cbd5e1; }
+    .weather-card .icon { font-size: 1.8rem; margin: 8px 0; }
+    .weather-card .temp { font-family: 'Syne', sans-serif; font-weight: 700; }
+
+    /* ── Community ── */
+    .post-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      margin-bottom: 12px;
+    }
+    .post-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .post-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--gold); color: #05070f;
+      font-weight: 700; display: flex; align-items: center;
+      justify-content: center; font-size: 14px;
+    }
+    .post-user { font-weight: 600; font-size: 0.9rem; }
+    .post-time { color: #cbd5e1; font-size: 0.78rem; margin-left: auto; }
+    .post-content { color: #cbd5e1; font-size: 0.92rem; line-height: 1.6; }
+    .upvote-btn {
+      background: none; border: 1px solid var(--border);
+      color: #cbd5e1; padding: 5px 12px;
+      border-radius: 20px; cursor: pointer;
+      font-size: 0.82rem; margin-top: 10px;
+      transition: all 0.2s;
+    }
+    .upvote-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Notifications ── */
+    .notif-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .notif-icon { font-size: 1.4rem; }
+    .notif-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 3px; }
+    .notif-desc { color: #cbd5e1; font-size: 0.83rem; }
+
+    /* ── Heatmap filters ── */
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .filter-chip {
+      padding: 6px 14px; border-radius: 20px;
+      border: 1px solid var(--border);
+      background: none; color: #cbd5e1;
+      cursor: pointer; font-size: 0.82rem;
+      transition: all 0.18s;
+    }
+    .filter-chip.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+    /* ── Msg box ── */
+    .msg { padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; margin-top: 12px; display: none; }
+    .msg.error { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+    .msg.success { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3); color: var(--green); }
+
+    /* ── Mobile hamburger ── */
+    .hamburger {
+      display: none; position: fixed; top: 16px; left: 16px;
+      z-index: 200; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px; cursor: pointer; font-size: 18px;
+    }
+
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 99;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; padding: 20px 16px 16px; padding-top: 60px; }
+      .hamburger { display: flex; }
+      .profile-wrap { grid-template-columns: 1fr; }
+      .sos-grid { grid-template-columns: 1fr 1fr; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 420px) {
+      .sos-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+
+    /* file preview */
+    #file-preview img { max-width: 160px; border-radius: 8px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="logo-sq">🛣️</div> SmartRoad
+    </div>
+    <div class="user-chip">
+      <div class="user-avatar" id="ua">U</div>
+      <div>
+        <div class="user-name" id="sbar-name">Loading…</div>
+        <div class="user-role">Citizen Reporter</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Reporting</div>
+    <button class="nav-item active" data-section="report"><i class="nav-icon fas fa-exclamation-triangle"></i> Report Issue</button>
+    <button class="nav-item" data-section="progress"><i class="nav-icon fas fa-chart-bar"></i> My Reports</button>
+
+    <div class="nav-label">Explore</div>
+    <button class="nav-item" data-section="map"><i class="nav-icon fas fa-map"></i> Live Map</button>
+    <button class="nav-item" data-section="heatmap"><i class="nav-icon fas fa-fire"></i> Heatmap</button>
+    <button class="nav-item" data-section="weather"><i class="nav-icon fas fa-cloud-sun"></i> Weather</button>
+
+    <div class="nav-label">Community</div>
+    <button class="nav-item" data-section="community"><i class="nav-icon fas fa-comments"></i> Community</button>
+    <button class="nav-item" data-section="notify"><i class="nav-icon fas fa-bell"></i> Notifications</button>
+    <button class="nav-item" data-section="sos"><i class="nav-icon fas fa-exclamation-circle"></i> SOS Emergency</button>
+
+    <div class="nav-label">Account</div>
+    <button class="nav-item" data-section="profile"><i class="nav-icon fas fa-user-circle"></i> Profile</button>
+  </nav>
+
+  <button class="logout-btn" onclick="logout()">Sign Out →</button>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Report Issue -->
+  <div id="sec-report" class="section active">
+    <div class="section-header">
+      <div class="section-title">🚧 Report a Road Issue</div>
+      <div class="section-sub">Help your city by reporting potholes, waterlogging & more</div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>Issue Title *</label>
+        <input id="r-title" type="text" placeholder="e.g. Large pothole near signal" maxlength="200"/>
+      </div>
+      <div class="field">
+        <label>Issue Type</label>
+        <select id="r-type">
+          <option>Pothole</option>
+          <option>Waterlogging</option>
+          <option>Unpaved Road</option>
+          <option>Accident Spot</option>
+          <option>Garbage</option>
+          <option>Broken Streetlight</option>
+          <option>Road Obstruction</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="r-desc" placeholder="Additional details about the issue…"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Mark Location on Map</label>
+        <div id="report-map" class="map-box"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="getMyLocation()">📍 Use My Location</button>
+          <span id="loc-label" style="color:var(--muted);font-size:0.85rem;"></span>
+        </div>
+        <div id="addr-label" style="color:var(--gold);font-size:0.82rem;margin-top:4px;"></div>
+      </div>
+
+      <div class="field">
+        <label>Photo / Video Evidence</label>
+        <input type="file" id="r-file" accept="image/*,video/*"/>
+        <div id="file-preview"></div>
+      </div>
+
+      <button class="btn btn-gold" onclick="submitReport()">Submit Report →</button>
+      <div id="report-msg" class="msg"></div>
+    </div>
+  </div>
+
+  <!-- My Reports -->
+  <div id="sec-progress" class="section">
+    <div class="section-header">
+      <div class="section-title">📊 My Reports</div>
+      <div class="section-sub">Track status of issues you've submitted</div>
+    </div>
+    <div class="stat-grid" id="my-stats"></div>
+    <div class="card" style="overflow-x:auto;">
+      <table class="data-table" id="my-table">
+        <thead>
+          <tr>
+            <th>Title</th><th>Type</th><th>Status</th><th>Location</th><th>Date</th><th>Image</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Live Map -->
+  <div id="sec-map" class="section">
+    <div class="section-header">
+      <div class="section-title"><i class="fas fa-map" style="margin-right:8px;"></i>Live Issue Map</div>
+      <div class="section-sub">All reported issues near you</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <input id="map-start" style="flex:2;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;outline:none;" placeholder="Start location"/>
+        <input id="map-end" style="flex:2;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;outline:none;" placeholder="Destination"/>
+        <button class="btn btn-gold" onclick="showRoute()">Show Route</button>
+      </div>
+      <div id="live-map" class="map-box" style="height:450px;"></div>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <div id="sec-heatmap" class="section">
+    <div class="section-header">
+      <div class="section-title"><i class="fas fa-fire" style="margin-right:8px;color:var(--red);"></i>Issue Heatmap</div>
+      <div class="section-sub">Visualize road issue density across the city</div>
+    </div>
+    <div class="card">
+      <div class="filter-chips" id="heat-filters">
+        <button class="filter-chip active" data-type="all">All Issues</button>
+        <button class="filter-chip active" data-type="Pothole">🕳️ Pothole</button>
+        <button class="filter-chip active" data-type="Waterlogging">💧 Waterlogging</button>
+        <button class="filter-chip active" data-type="Broken Streetlight">💡 Streetlight</button>
+        <button class="filter-chip active" data-type="Garbage">🗑️ Garbage</button>
+        <button class="filter-chip active" data-type="Unpaved Road">🏗️ Unpaved</button>
+        <button class="filter-chip active" data-type="Accident Spot">⚠️ Accident</button>
+      </div>
+      <div id="heat-map" class="map-box" style="height:450px;"></div>
+    </div>
+  </div>
+
+  <!-- Weather -->
+  <div id="sec-weather" class="section">
+    <div class="section-header">
+      <div class="section-title">🌤️ Weather</div>
+      <div class="section-sub">7-day forecast to plan your commute</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+        <input id="w-city" style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:inherit;outline:none;" placeholder="Enter city name…"/>
+        <button class="btn btn-gold" onclick="getWeather()">Get Forecast</button>
+      </div>
+      <div class="weather-cards" id="weather-out"></div>
+    </div>
+  </div>
+
+  <!-- Community -->
+  <div id="sec-community" class="section">
+    <div class="section-header">
+      <div class="section-title">💬 Community</div>
+      <div class="section-sub">Discuss road issues with fellow citizens</div>
+    </div>
+    <div class="card">
+      <textarea id="post-content" placeholder="Share something about road issues in your area…" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:inherit;min-height:80px;outline:none;resize:vertical;"></textarea>
+      <button class="btn btn-gold" style="margin-top:10px;" onclick="submitPost()">Post →</button>
+      <div id="post-msg" class="msg"></div>
+    </div>
+    <div id="community-feed"></div>
+  </div>
+
+  <!-- Notifications -->
+  <div id="sec-notify" class="section">
+    <div class="section-header">
+      <div class="section-title">🔔 Notifications</div>
+      <div class="section-sub">Stay updated on your reports</div>
+    </div>
+    <div class="card" id="notify-list">Loading…</div>
+  </div>
+
+  <!-- SOS -->
+  <div id="sec-sos" class="section">
+    <div class="section-header">
+      <div class="section-title">🚨 SOS Emergency</div>
+      <div class="section-sub">One tap to call emergency services</div>
+    </div>
+    <div class="sos-grid">
+      <div class="sos-card">
+        <a class="sos-num" href="tel:100">100</a>
+        <div class="sos-lbl">🚔 Police</div>
+      </div>
+      <div class="sos-card">
+        <a class="sos-num" href="tel:108">108</a>
+        <div class="sos-lbl">🚑 Ambulance</div>
+      </div>
+      <div class="sos-card">
+        <a class="sos-num" href="tel:101">101</a>
+        <div class="sos-lbl">🚒 Fire Brigade</div>
+      </div>
+      <div class="sos-card">
+        <a class="sos-num" href="tel:1033">1033</a>
+        <div class="sos-lbl">🛣️ Toll Emergency</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Emergency Guidelines</div>
+      <ul style="color:var(--muted);font-size:0.9rem;line-height:2;list-style:none;padding:0;">
+        <li>✅ Stay calm and assess the situation</li>
+        <li>✅ Move to safety if immediate danger exists</li>
+        <li>✅ Call emergency numbers listed above</li>
+        <li>✅ Share your GPS location with authorities</li>
+        <li>✅ Do not block emergency vehicle routes</li>
+        <li>✅ Follow instructions from first responders</li>
+        <li>✅ Document incident safely if possible</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div id="sec-profile" class="section">
+    <div class="section-header">
+      <div class="section-title">👤 Profile</div>
+      <div class="section-sub">Manage your account information</div>
+    </div>
+    <div class="profile-wrap">
+      <div class="card profile-photo-col">
+        <img id="p-photo" class="profile-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f5c842'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-size='48' fill='%23050a0f'%3EU%3C/text%3E%3C/svg%3E"/>
+        <input type="file" id="p-upload" accept="image/*" style="display:none;" onchange="previewPhoto(this)"/>
+        <button class="btn btn-outline" style="width:100%;font-size:0.85rem;" id="p-edit-photo" onclick="document.getElementById('p-upload').click()" style="display:none;">Change Photo</button>
+        <div id="p-age" style="color:var(--gold);font-size:0.85rem;text-align:center;"></div>
+      </div>
+      <div class="card">
+        <div id="p-saved" class="msg success" style="margin-bottom:12px;">✅ Profile saved!</div>
+        <div class="field">
+          <label>Username</label>
+          <input id="p-username" disabled style="opacity:0.6;cursor:not-allowed;"/>
+        </div>
+        <div class="field">
+          <label>Email (@gmail.com or @yahoo.com)</label>
+          <input id="p-email" type="email" disabled placeholder="yourname@gmail.com"/>
+          <div id="email-err" style="color:var(--red);font-size:0.78rem;display:none;margin-top:4px;">Only @gmail.com or @yahoo.com allowed</div>
+        </div>
+        <div class="field">
+          <label>Date of Birth</label>
+          <input id="p-dob" type="date" disabled oninput="validateDob(this)"/>
+          <div id="dob-err" style="color:var(--red);font-size:0.78rem;display:none;margin-top:4px;">Date cannot be in the future</div>
+        </div>
+        <div class="field">
+          <label>Gender</label>
+          <select id="p-gender" disabled>
+            <option value="">Select…</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Phone Number (10 digits)</label>
+          <input id="p-phone" type="tel" disabled maxlength="10" inputmode="numeric" pattern="[0-9]{10}"/>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+          <button class="btn btn-gold" id="p-edit-btn" onclick="enableProfileEdit()">Edit Profile</button>
+          <button class="btn btn-gold" id="p-save-btn" style="display:none;" onclick="saveProfile()">Save Changes</button>
+          <button class="btn btn-outline" id="p-cancel-btn" style="display:none;" onclick="cancelProfileEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Image viewer modal -->
+<div id="img-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:999;align-items:center;justify-content:center;">
+  <button onclick="document.getElementById('img-modal').style.display='none'" style="position:absolute;top:20px;right:20px;background:#f87171;border:none;color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:1rem;">✕ Close</button>
+  <img id="modal-img" style="max-width:90%;max-height:85vh;border-radius:12px;"/>
+</div>
+
+<script>
+// ── Auth guard ──
+const USERNAME = localStorage.getItem('username');
+const USEREMAIL = localStorage.getItem('email');
+if (!USERNAME) { alert('Please sign in first'); window.location.href = 'index.html'; }
+
+// Sidebar & brand
+document.getElementById('sbar-name').textContent = USERNAME;
+document.getElementById('ua').textContent = USERNAME[0].toUpperCase();
+
+let reportLat = null, reportLng = null;
+let reportMap, liveMap, heatMap;
+let heatLayer;
+let allIssues = [];
+
+// ── Navigation ──
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    const s = btn.dataset.section;
+    document.getElementById('sec-' + s).classList.add('active');
+    if (s === 'map') initLiveMap();
+    if (s === 'heatmap') initHeatmap();
+    if (s === 'progress') loadMyReports();
+    if (s === 'community') loadCommunity();
+    if (s === 'notify') loadNotifications();
+    if (s === 'profile') loadProfile();
+    closeSidebar();
+  });
+});
+
+// Phone validation - allow only 10 digits
+document.getElementById('p-phone').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+});
+
+// ── Mobile sidebar ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── Report Map ──
+window.addEventListener('DOMContentLoaded', () => {
+  reportMap = L.map('report-map').setView([13.08, 80.27], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(reportMap);
+
+  let marker;
+  reportMap.on('click', e => {
+    reportLat = e.latlng.lat;
+    reportLng = e.latlng.lng;
+    if (marker) marker.setLatLng(e.latlng);
+    else marker = L.marker(e.latlng).addTo(reportMap);
+    document.getElementById('loc-label').textContent = `${reportLat.toFixed(5)}, ${reportLng.toFixed(5)}`;
+    reverseGeocode(reportLat, reportLng, 'addr-label');
+  });
+});
+
+function getMyLocation() {
+  navigator.geolocation.getCurrentPosition(pos => {
+    reportLat = pos.coords.latitude;
+    reportLng = pos.coords.longitude;
+    reportMap.setView([reportLat, reportLng], 15);
+    L.marker([reportLat, reportLng]).addTo(reportMap);
+    document.getElementById('loc-label').textContent = `${reportLat.toFixed(5)}, ${reportLng.toFixed(5)}`;
+    reverseGeocode(reportLat, reportLng, 'addr-label');
+  }, () => showMsg('report-msg', 'Location access denied', 'error'));
+}
+
+async function reverseGeocode(lat, lng, elId) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    const d = await r.json();
+    document.getElementById(elId).textContent = d.display_name || '';
+  } catch {}
+}
+
+// ── File preview ──
+document.getElementById('r-file').addEventListener('change', function() {
+  const file = this.files[0];
+  const preview = document.getElementById('file-preview');
+  if (!file) { preview.innerHTML = ''; return; }
+  if (file.type.startsWith('image')) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.innerHTML = `<img src="${e.target.result}"/>`; };
+    reader.readAsDataURL(file);
+  } else {
+    preview.textContent = '📹 ' + file.name;
+  }
+});
+
+// ── Submit Report ──
+async function submitReport() {
+  const title = document.getElementById('r-title').value.trim();
+  const type = document.getElementById('r-type').value;
+  const desc = document.getElementById('r-desc').value.trim();
+  const file = document.getElementById('r-file').files[0];
+
+  if (!title) return showMsg('report-msg', 'Please enter an issue title', 'error');
+  if (!reportLat) return showMsg('report-msg', 'Please mark the location on the map', 'error');
+
+  const fd = new FormData();
+  fd.append('title', title);
+  fd.append('type', type);
+  fd.append('description', desc);
+  fd.append('username', USERNAME);
+  fd.append('email', USEREMAIL || '');
+  fd.append('latitude', reportLat);
+  fd.append('longitude', reportLng);
+  fd.append('address', document.getElementById('addr-label').textContent);
+  if (file) fd.append('image', file);
+
+  try {
+    const res = await fetch('http://localhost:3300/api/issues', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.success) {
+      showMsg('report-msg', '✅ Issue reported! Thank you for helping.', 'success');
+      document.getElementById('r-title').value = '';
+      document.getElementById('r-desc').value = '';
+      document.getElementById('file-preview').innerHTML = '';
+      document.getElementById('r-file').value = '';
+    } else {
+      showMsg('report-msg', data.message || 'Failed to submit', 'error');
+    }
+  } catch {
+    showMsg('report-msg', 'Server not reachable. Check backend.', 'error');
+  }
+}
+
+// ── My Reports ──
+async function loadMyReports() {
+  try {
+    const res = await fetch(`http://localhost:3300/api/issues/user/${USERNAME}`);
+    const data = await res.json();
+    const tbody = document.querySelector('#my-table tbody');
+    tbody.innerHTML = '';
+
+    // Stats
+    const stats = { total: data.length, pending: 0, progress: 0, resolved: 0 };
+    data.forEach(i => {
+      if (i.status === 'Pending') stats.pending++;
+      if (i.status === 'In Progress') stats.progress++;
+      if (i.status === 'Resolved') stats.resolved++;
+    });
+    document.getElementById('my-stats').innerHTML = `
+      <div class="stat-card"><div class="val">${stats.total}</div><div class="lbl">Total</div></div>
+      <div class="stat-card"><div class="val" style="color:#fbbf24;">${stats.pending}</div><div class="lbl">Pending</div></div>
+      <div class="stat-card"><div class="val" style="color:#60a5fa;">${stats.progress}</div><div class="lbl">In Progress</div></div>
+      <div class="stat-card"><div class="val" style="color:var(--green);">${stats.resolved}</div><div class="lbl">Resolved</div></div>
+    `;
+
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">No issues reported yet</td></tr>';
+      return;
+    }
+
+    data.forEach(i => {
+      const badgeCls = i.status === 'Pending' ? 'badge-pending' : i.status === 'In Progress' ? 'badge-progress' : 'badge-resolved';
+      const imgHtml = i.image_url ? `<img src="http://localhost:3300${i.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;" onclick="viewImg('http://localhost:3300${i.image_url}')"/>` : '—';
+      const date = new Date(i.created_at).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'2-digit' });
+      tbody.innerHTML += `
+        <tr>
+          <td>${i.title}</td>
+          <td>${i.type}</td>
+          <td><span class="badge ${badgeCls}">${i.status}</span></td>
+          <td style="max-width:150px;font-size:0.78rem;color:var(--muted);">${i.address || `${Number(i.latitude).toFixed(4)},${Number(i.longitude).toFixed(4)}`}</td>
+          <td>${date}</td>
+          <td>${imgHtml}</td>
+        </tr>`;
+    });
+  } catch {
+    document.querySelector('#my-table tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--red);">Could not load reports</td></tr>';
+  }
+}
+
+// ── Live Map ──
+async function initLiveMap() {
+  if (liveMap) { liveMap.invalidateSize(); return; }
+  liveMap = L.map('live-map').setView([13.08, 80.27], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(liveMap);
+
+  try {
+    const res = await fetch('http://localhost:3300/api/issues');
+    allIssues = await res.json();
+    allIssues.forEach(i => {
+      if (!i.latitude || !i.longitude) return;
+      const color = i.status === 'Resolved' ? 'green' : i.status === 'In Progress' ? 'blue' : 'orange';
+      L.circleMarker([i.latitude, i.longitude], { radius: 8, color, fillColor: color, fillOpacity: 0.8 })
+        .addTo(liveMap)
+        .bindPopup(`<b>${i.title}</b><br>Type: ${i.type}<br>Status: ${i.status}<br>By: ${i.username}`);
+    });
+  } catch {}
+}
+
+// ── Heatmap ──
+async function initHeatmap() {
+  if (heatMap) { heatMap.invalidateSize(); return; }
+  heatMap = L.map('heat-map').setView([13.08, 80.27], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(heatMap);
+
+  try {
+    if (!allIssues.length) {
+      const res = await fetch('http://localhost:3300/api/issues');
+      allIssues = await res.json();
+    }
+    renderHeatLayer();
+  } catch {}
+}
+
+function renderHeatLayer() {
+  const active = [...document.querySelectorAll('#heat-filters .filter-chip.active')].map(b => b.dataset.type);
+  const points = allIssues
+    .filter(i => i.latitude && i.longitude && (active.includes('all') || active.includes(i.type)))
+    .map(i => [parseFloat(i.latitude), parseFloat(i.longitude), 1.0]);
+
+  if (heatLayer) heatMap.removeLayer(heatLayer);
+  if (points.length) heatLayer = L.heatLayer(points, { radius: 35, blur: 20, maxZoom: 17 }).addTo(heatMap);
+}
+
+document.querySelectorAll('#heat-filters .filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('active');
+    if (heatMap) renderHeatLayer();
+  });
+});
+
+// ── Weather ──
+async function getWeather() {
+  const city = document.getElementById('w-city').value.trim();
+  if (!city) return;
+  const out = document.getElementById('weather-out');
+  out.innerHTML = '<span style="color:var(--muted);">Loading…</span>';
+  try {
+    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+    const geo = await geoRes.json();
+    if (!geo.results?.length) { out.innerHTML = '<span style="color:var(--red);">City not found</span>'; return; }
+    const { latitude, longitude } = geo.results[0];
+    const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`);
+    const w = await wRes.json();
+    const icons = ['☀️','🌤️','⛅','🌦️','🌧️','⛈️','🌩️','❄️','🌫️'];
+    const weatherIcon = code => code <= 3 ? icons[0] : code <= 48 ? icons[8] : code <= 67 ? icons[3] : code <= 77 ? icons[7] : code <= 82 ? icons[4] : icons[5];
+    out.innerHTML = w.daily.time.map((day, i) => `
+      <div class="weather-card">
+        <div class="day">${new Date(day).toLocaleDateString('en-IN',{weekday:'short'})}</div>
+        <div class="icon">${weatherIcon(w.daily.weathercode[i])}</div>
+        <div class="temp">${Math.round(w.daily.temperature_2m_max[i])}°</div>
+        <div style="color:var(--muted);font-size:0.78rem;">${Math.round(w.daily.temperature_2m_min[i])}°</div>
+      </div>`).join('');
+  } catch { out.innerHTML = '<span style="color:var(--red);">Failed to load weather</span>'; }
+}
+
+// ── Community ──
+async function loadCommunity() {
+  const feed = document.getElementById('community-feed');
+  feed.innerHTML = '<div style="color:var(--muted);padding:20px;">Loading…</div>';
+  try {
+    const res = await fetch('http://localhost:3300/api/community');
+    const posts = await res.json();
+    if (!posts.length) { feed.innerHTML = '<div class="card" style="color:var(--muted);">No posts yet. Be the first!</div>'; return; }
+    feed.innerHTML = posts.map(p => `
+      <div class="post-card">
+        <div class="post-meta">
+          <div class="post-avatar">${p.username[0].toUpperCase()}</div>
+          <div>
+            <div class="post-user">${p.username}</div>
+          </div>
+          <div class="post-time">${timeAgo(p.created_at)}</div>
+        </div>
+        <div class="post-content">${p.content}</div>
+        <button class="upvote-btn" onclick="upvote(${p.id}, this)">👍 ${p.upvotes}</button>
+      </div>`).join('');
+  } catch { feed.innerHTML = '<div class="card" style="color:var(--red);">Could not load community</div>'; }
+}
+
+async function submitPost() {
+  const content = document.getElementById('post-content').value.trim();
+  if (!content) return;
+  try {
+    const res = await fetch('http://localhost:3300/api/community', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: USERNAME, content })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('post-content').value = '';
+      showMsg('post-msg', '✅ Posted!', 'success');
+      loadCommunity();
+    }
+  } catch {}
+}
+
+async function upvote(id, btn) {
+  try {
+    const res = await fetch(`http://localhost:3300/api/community/${id}/upvote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: USERNAME })
+    });
+    const data = await res.json();
+    if (data.success) btn.textContent = `👍 ${parseInt(btn.textContent.match(/\d+/)[0]) + 1}`;
+  } catch {}
+}
+
+// ── Notifications ──
+function loadNotifications() {
+  const el = document.getElementById('notify-list');
+  const notifs = [
+    { icon: '🚧', title: 'Your report was reviewed', desc: 'Status changed to "In Progress"', time: '2h ago' },
+    { icon: '✅', title: 'Issue resolved!', desc: 'A pothole you reported has been fixed.', time: 'Yesterday' },
+    { icon: '💬', title: 'New community post', desc: 'Someone posted in your area.', time: '3h ago' },
+  ];
+  el.innerHTML = notifs.map(n => `
+    <div class="notif-item">
+      <div class="notif-icon">${n.icon}</div>
+      <div>
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-desc">${n.desc}</div>
+        <div style="color:var(--muted);font-size:0.76rem;margin-top:4px;">${n.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Profile ──
+let profileCache = {};
+async function loadProfile() {
+  try {
+    const res = await fetch(`http://localhost:3300/api/profile/${USERNAME}`);
+    profileCache = await res.json();
+    setDobMax();
+    document.getElementById('p-username').value = profileCache.username || USERNAME;
+    document.getElementById('p-email').value = profileCache.email || '';
+    document.getElementById('p-dob').value = profileCache.dob ? profileCache.dob.split('T')[0] : '';
+    document.getElementById('p-gender').value = profileCache.gender || '';
+    document.getElementById('p-phone').value = profileCache.phone || '';
+    if (profileCache.dob) {
+      const age = Math.floor((Date.now() - new Date(profileCache.dob)) / 31556952000);
+      document.getElementById('p-age').textContent = `Age: ${age}`;
+    }
+    if (profileCache.photo) document.getElementById('p-photo').src = profileCache.photo;
+  } catch {}
+}
+
+function enableProfileEdit() {
+  setDobMax();
+  ['p-email','p-dob','p-gender','p-phone'].forEach(id => document.getElementById(id).disabled = false);
+  const saveBtn = document.getElementById('p-save-btn');
+  if (saveBtn) {
+    saveBtn.disabled = false;
+    saveBtn.style.filter = '';
+    saveBtn.style.opacity = '';
+    saveBtn.style.cursor = '';
+  }
+  document.getElementById('p-edit-photo').style.display = '';
+  document.getElementById('p-edit-btn').style.display = 'none';
+  document.getElementById('p-save-btn').style.display = '';
+  document.getElementById('p-cancel-btn').style.display = '';
+}
+
+function cancelProfileEdit() {
+  ['p-email','p-dob','p-gender','p-phone'].forEach(id => document.getElementById(id).disabled = true);
+  document.getElementById('p-edit-photo').style.display = 'none';
+  document.getElementById('p-edit-btn').style.display = '';
+  document.getElementById('p-save-btn').style.display = 'none';
+  document.getElementById('p-cancel-btn').style.display = 'none';
+  loadProfile();
+}
+
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('p-photo').src = e.target.result; profileCache.photo = e.target.result; };
+  reader.readAsDataURL(file);
+}
+
+async function saveProfile() {
+  const email = document.getElementById('p-email').value.trim();
+  const dob = document.getElementById('p-dob').value;
+  const today = new Date().toISOString().split('T')[0];
+
+  if (dob && dob > today) {
+    const saveBtn = document.getElementById('p-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.style.filter = 'blur(2px)';
+      saveBtn.style.opacity = '0.6';
+      saveBtn.style.cursor = 'not-allowed';
+    }
+    return;
+  }
+
+  if (email && (!email.toLowerCase().endsWith('@yahoo.com') && !email.toLowerCase().endsWith('@gmail.com'))) {
+    document.getElementById('email-err').style.display = 'block';
+    return;
+  }
+  document.getElementById('email-err').style.display = 'none';
+
+  try {
+    const res = await fetch(`http://localhost:3300/api/profile/${USERNAME}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        dob: document.getElementById('p-dob').value,
+        gender: document.getElementById('p-gender').value,
+        phone: document.getElementById('p-phone').value,
+        photo: profileCache.photo || ''
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      const msg = document.getElementById('p-saved');
+      msg.style.display = 'block';
+      msg.textContent = '✅ Profile saved successfully!';
+      setTimeout(() => msg.style.display = 'none', 2000);
+      cancelProfileEdit();
+      loadProfile();
+    } else {
+      alert('Error: ' + (data.message || 'Failed to save profile'));
+    }
+  } catch (err) {
+    alert('Error saving profile: ' + err.message);
+  }
+}
+
+function setDobMax() {
+  const dobInput = document.getElementById('p-dob');
+  if (!dobInput) return;
+  dobInput.max = new Date().toISOString().split('T')[0];
+}
+
+function validateDob(input) {
+  const today = new Date().toISOString().split('T')[0];
+  const saveBtn = document.getElementById('p-save-btn');
+  if (input.value && input.value > today) {
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.style.filter = 'blur(2px)';
+      saveBtn.style.opacity = '0.6';
+      saveBtn.style.cursor = 'not-allowed';
+    }
+    input.blur();
+  } else {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.style.filter = '';
+      saveBtn.style.opacity = '';
+      saveBtn.style.cursor = '';
+    }
+  }
+}
+
+// ── Route (basic) ──
+function showRoute() {
+  const start = document.getElementById('map-start').value.trim();
+  const end = document.getElementById('map-end').value.trim();
+  if (!start || !end) return;
+  // Just center the map; full routing requires OSRM integration
+  alert('Route planning: enter coordinates as "lat,lng" or use the live map pins.\n\nFull turn-by-turn routing available with OSRM backend.');
+}
+
+// ── Utilities ──
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `msg ${type}`;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+function viewImg(src) {
+  document.getElementById('modal-img').src = src;
+  document.getElementById('img-modal').style.display = 'flex';
+}
+
+function timeAgo(ts) {
+  const d = Math.floor((Date.now() - new Date(ts)) / 60000);
+  if (d < 1) return 'Just now';
+  if (d < 60) return `${d}m ago`;
+  if (d < 1440) return `${Math.floor(d/60)}h ago`;
+  return `${Math.floor(d/1440)}d ago`;
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>

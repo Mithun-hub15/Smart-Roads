@@ -1,0 +1,27 @@
+{
+  "name": "smartroad",
+  "version": "1.0.0",
+  "description": "``` smartroad/ ├── backend/ │   ├── server.js          ← Node.js + Express backend │   ├── package.json │   └── uploads/           ← Auto-created for uploaded images └── frontend/     ├── index.html         ← Login / Sign-up page     ├── user.html          ← Citizen dashboard     └── admin.html         ← Admin control panel ```",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mithun-hub15/smartroad.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mithun-hub15/smartroad/issues"
+  },
+  "homepage": "https://github.com/Mithun-hub15/smartroad#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "sqlite3": "^6.0.1"
+  }
+}

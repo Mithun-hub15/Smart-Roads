@@ -1,0 +1,18 @@
+.env
+backend/.env
+node_modules/
+backend/node_modules/
+*.log
+backend/Dockerfile.bak
+
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.tfvars
+override.tf
+override.tf.json
+crash.log

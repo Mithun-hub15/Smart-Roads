@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartRoad — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #05070f;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --gold: #f5c842;
+      --gold-dim: rgba(245,200,66,0.15);
+      --blue: #3b82f6;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --error: #f87171;
+      --success: #34d399;
+      --radius: 16px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: auto;
+    }
+
+    /* ── Animated background ── */
+    .bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.18) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 90% 80%, rgba(245,200,66,0.10) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 50% at 10% 90%, rgba(99,102,241,0.12) 0%, transparent 60%);
+    }
+
+    .road-lines {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 1;
+      height: 180px;
+      background: linear-gradient(to top, rgba(245,200,66,0.03) 0%, transparent 100%);
+      overflow: hidden;
+    }
+
+    .road-stripe {
+      position: absolute; bottom: 20px; height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(245,200,66,0.4), transparent);
+      animation: driveBy 4s linear infinite;
+    }
+    .road-stripe:nth-child(1) { width: 120px; animation-delay: 0s; }
+    .road-stripe:nth-child(2) { width: 80px; animation-delay: 1.3s; bottom: 35px; }
+    .road-stripe:nth-child(3) { width: 100px; animation-delay: 2.6s; bottom: 10px; }
+
+    @keyframes driveBy {
+      from { transform: translateX(-200px); left: 0%; }
+      to { transform: translateX(0); left: 110%; }
+    }
+
+    /* ── Floating dots ── */
+    .dot {
+      position: fixed; border-radius: 50%; z-index: 1;
+      background: rgba(245,200,66,0.15);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 0.5; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative; z-index: 10;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 480px 1fr;
+      align-items: center;
+    }
+
+    /* ── Left brand panel ── */
+    .brand-panel {
+      padding: 60px 40px 60px 60px;
+      display: flex; flex-direction: column; gap: 32px;
+    }
+
+    .brand-logo {
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .logo-icon {
+      width: 48px; height: 48px;
+      background: var(--gold);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 30px rgba(245,200,66,0.4);
+    }
+
+    .logo-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 3.5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    .brand-headline span {
+      color: var(--gold);
+      position: relative;
+    }
+
+    .brand-desc {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      line-height: 1.7;
+      max-width: 380px;
+    }
+
+    .stat-row {
+      display: flex; gap: 32px; margin-top: 8px;
+    }
+
+    .stat { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem; font-weight: 800;
+      color: var(--gold);
+    }
+    .stat-label { font-size: 0.8rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; }
+
+    .feature-list { display: flex; flex-direction: column; gap: 14px; }
+    .feature-item {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.95rem; color: #cbd5e1;
+    }
+    .feature-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--gold-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+
+    /* ── Auth card ── */
+    .auth-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 36px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+
+    .card-header {
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card-subtitle { font-size: 0.9rem; color: #cbd5e1; }
+
+    /* ── Tab toggle ── */
+    .tab-row {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px 0;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.25s;
+    }
+
+    .tab-btn.active {
+      background: var(--gold);
+      color: #05070f;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(245,200,66,0.3);
+    }
+
+    /* ── Form ── */
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 7px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .field input, .field select {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: var(--gold);
+      background: rgba(245,200,66,0.06);
+      box-shadow: 0 0 0 3px rgba(245,200,66,0.1);
+    }
+
+    .field input::placeholder { color: #4b5563; }
+
+    .field input.error-field { border-color: var(--error); }
+
+    .eye-btn {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; font-size: 16px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .eye-btn:hover { color: var(--gold); }
+
+    .field-hint {
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      margin-top: 5px;
+    }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: #05070f;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,200,66,0.4); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ── Messages ── */
+    .msg-box {
+      margin-top: 16px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      display: none;
+      animation: slideIn 0.2s ease;
+    }
+
+    .msg-box.error {
+      background: rgba(248,113,113,0.12);
+      border: 1px solid rgba(248,113,113,0.3);
+      color: var(--error);
+    }
+
+    .msg-box.success {
+      background: rgba(52,211,153,0.12);
+      border: 1px solid rgba(52,211,153,0.3);
+      color: var(--success);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-6px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0;
+      color: #cbd5e1;
+      font-size: 0.82rem;
+    }
+
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Right spacer ── */
+    .right-panel { display: flex; align-items: center; justify-content: center; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      html, body { overflow: auto; }
+      .page { grid-template-columns: 1fr; grid-template-rows: auto; align-items: start; padding: 24px 16px 40px; }
+      .brand-panel { padding: 20px 0 0 0; order: 2; display: none; }
+      .auth-card { order: 1; }
+      .right-panel { display: none; }
+    }
+
+    @media (max-width: 540px) {
+      .auth-card { padding: 28px 20px; border-radius: 16px; }
+      .brand-headline { font-size: 2rem; }
+      .stat-row { gap: 20px; }
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(5,7,15,0.3);
+      border-top-color: #05070f;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Strength meter */
+    .strength-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-canvas"></div>
+<div class="road-lines">
+  <div class="road-stripe"></div>
+  <div class="road-stripe"></div>
+  <div class="road-stripe"></div>
+</div>
+
+<!-- Floating dots JS -->
+<script>
+  for (let i = 0; i < 12; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    const size = Math.random() * 6 + 3;
+    d.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
+    document.body.appendChild(d);
+  }
+</script>
+
+<div class="page">
+
+  <!-- ── Left Brand Panel ── -->
+  <div class="brand-panel">
+    <div class="brand-logo">
+      <div class="logo-icon">🛣️</div>
+      <span class="logo-name">SmartRoad</span>
+    </div>
+
+    <div>
+      <div class="brand-headline">
+        Fix Roads.<br>
+        <span>Together.</span>
+      </div>
+    </div>
+
+    <p class="brand-desc">
+      A citizen-powered platform to report potholes, waterlogging, broken lights and road hazards — turning complaints into action.
+    </p>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-num">2.4K+</span>
+        <span class="stat-label">Issues Fixed</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">98%</span>
+        <span class="stat-label">Response Rate</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">150+</span>
+        <span class="stat-label">Areas Covered</span>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-item"><div class="feature-icon">📍</div> Pin exact pothole locations on live map</div>
+      <div class="feature-item"><div class="feature-icon">📸</div> Upload photo evidence instantly</div>
+      <div class="feature-item"><div class="feature-icon">📊</div> Track resolution status in real-time</div>
+      <div class="feature-item"><div class="feature-icon">🚨</div> SOS emergency alert system</div>
+    </div>
+  </div>
+
+  <!-- ── Auth Card ── -->
+  <div class="auth-card">
+    <div class="card-header">
+      <div class="card-title">Welcome Back 👋</div>
+      <div class="card-subtitle">Sign in to your SmartRoad account</div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+      <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+    </div>
+
+    <!-- ─── SIGN IN FORM ─── -->
+    <div id="form-signin">
+      <div class="field">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <input id="li-email" type="email" placeholder="name@gmail.com / name@yahoo.com" autocomplete="email" maxlength="40" oninput="validateEmail(this)"/>
+        </div>
+        <div class="field-hint">Accepts only @gmail.com or @yahoo.com addresses.</div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <input id="li-pass" type="password" placeholder="6-character password" maxlength="6" autocomplete="current-password"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('li-pass', this)">👁️</button>
+        </div>
+        <div class="field-hint">Password is exactly 6 characters</div>
+      </div>
+
+      <button class="submit-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+      <div id="li-msg" class="msg-box error"></div>
+    </div>
+
+    <!-- ─── SIGN UP FORM ─── -->
+    <div id="form-signup" style="display:none;">
+      <div class="field">
+        <label>Username</label>
+        <input id="su-name" type="text" placeholder="Letters & numbers, max 20 chars" maxlength="20"/>
+        <div class="field-hint">Letters and numbers only · Max 20 characters</div>
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input id="su-email" type="email" placeholder="name@gmail.com / name@yahoo.com" maxlength="40" oninput="validateEmail(this)"/>
+        <div class="field-hint">Enter a valid Gmail or Yahoo email address.</div>
+      </div>
+
+      <div class="field">
+        <label>Phone Number</label>
+        <input id="su-phone" type="tel" placeholder="9876543210" maxlength="10" inputmode="numeric" oninput="validatePhoneOnly(this)"/>
+        <div class="field-hint">10 digits only (numbers only)</div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <input id="su-pass" type="password" placeholder="6 characters" maxlength="6" oninput="checkStrength(this.value)"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('su-pass', this)">👁️</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="str-fill"></div></div>
+      </div>
+
+      <div class="field">
+        <label>Confirm Password</label>
+        <div class="input-wrap">
+          <input id="su-confirm" type="password" placeholder="Repeat password" maxlength="6"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('su-confirm', this)">👁️</button>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="signup-btn" onclick="doSignup()">Create Account</button>
+      <div id="su-msg" class="msg-box"></div>
+    </div>
+  </div>
+
+  <div class="right-panel"></div>
+</div>
+
+<script>
+// ── Tab Switch ──
+function switchTab(tab) {
+  const isSignin = tab === 'signin';
+  document.getElementById('form-signin').style.display = isSignin ? '' : 'none';
+  document.getElementById('form-signup').style.display = isSignin ? 'none' : '';
+  document.getElementById('tab-signin').classList.toggle('active', isSignin);
+  document.getElementById('tab-signup').classList.toggle('active', !isSignin);
+  document.getElementById('li-msg').style.display = 'none';
+  document.getElementById('su-msg').style.display = 'none';
+}
+
+// ── Eye Toggle ──
+function toggleEye(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+}
+
+// ── Email validation - @gmail.com or @yahoo.com ──
+function validateEmail(input) {
+  const val = input.value.trim();
+  const msgId = input.id.startsWith('li-') ? 'li-msg' : 'su-msg';
+  const allowed = /^[^\s@]+@(?:gmail\.com|yahoo\.com)$/i;
+
+  if (!val) {
+    document.getElementById(msgId).style.display = 'none';
+    return;
+  }
+
+  if (!val.includes('@')) {
+    document.getElementById(msgId).style.display = 'none';
+    return;
+  }
+
+  if (!allowed.test(val)) {
+    showMsg(msgId, 'Only @gmail.com or @yahoo.com addresses are allowed', 'error');
+  } else {
+    document.getElementById(msgId).style.display = 'none';
+  }
+}
+
+// ── Password strength ──
+function checkStrength(val) {
+  const fill = document.getElementById('str-fill');
+  const len = val.length;
+  if (len === 0) { fill.style.width = '0%'; fill.style.background = ''; return; }
+  const pct = Math.min((len / 6) * 100, 100);
+  fill.style.width = pct + '%';
+  fill.style.background = len < 3 ? '#f87171' : len < 5 ? '#f5c842' : '#34d399';
+}
+
+// ── Email validation - only @gmail.com ──
+function validateGmailOnly(input) {
+  let value = input.value;
+  // Remove any characters that aren't allowed in email
+  if (value && !value.includes('@')) {
+    value = value.replace(/[^a-zA-Z0-9._-]/g, '');
+    input.value = value;
+  }
+  // If @ exists, enforce @gmail.com
+  if (value.includes('@')) {
+    const [local, domain] = value.split('@');
+    if (domain && !domain.startsWith('gmail.com')) {
+      input.value = local + '@gmail.com';
+    }
+  }
+}
+
+// ── Phone validation - only 10 digits ──
+function validatePhoneOnly(input) {
+  input.value = input.value.replace(/[^0-9]/g, '').slice(0, 10);
+}
+
+// ── Show message ──
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `msg-box ${type}`;
+  el.style.display = 'block';
+}
+
+// ── Login ──
+async function doLogin() {
+  const btn = document.getElementById('login-btn');
+  const email = document.getElementById('li-email').value.trim();
+  const password = document.getElementById('li-pass').value;
+
+  const emailPattern = /^[^\s@]+@(?:gmail\.com|yahoo\.com)$/i;
+  if (!email || !password) return showMsg('li-msg', 'Please fill in all fields', 'error');
+  if (!emailPattern.test(email))
+    return showMsg('li-msg', 'Only @gmail.com or @yahoo.com addresses allowed', 'error');
+  if (password.length !== 6) return showMsg('li-msg', 'Password must be exactly 6 characters', 'error');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+  try {
+    const res = await fetch('http://localhost:3300/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('email', data.email);
+      showMsg('li-msg', '✅ Welcome back, ' + data.username + '!', 'success');
+      setTimeout(() => {
+        window.location.href = data.role === 'admin' ? 'admin.html' : 'user.html';
+      }, 800);
+    } else {
+      showMsg('li-msg', data.message || 'Invalid credentials', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  } catch {
+    showMsg('li-msg', 'Cannot reach server. Is the backend running?', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+}
+
+// ── Signup ──
+async function doSignup() {
+  const btn = document.getElementById('signup-btn');
+  const username = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const phone = document.getElementById('su-phone').value.trim();
+  const password = document.getElementById('su-pass').value;
+  const confirm = document.getElementById('su-confirm').value;
+
+  const emailPattern = /^[^\s@]+@(?:gmail\.com|yahoo\.com)$/i;
+  if (!/^[A-Za-z0-9]{1,20}$/.test(username))
+    return showMsg('su-msg', 'Username: letters & numbers only, max 20 chars', 'error');
+  if (!email || !emailPattern.test(email))
+    return showMsg('su-msg', 'Only @gmail.com or @yahoo.com addresses allowed', 'error');
+  if (password.length !== 6)
+    return showMsg('su-msg', 'Password must be exactly 6 characters', 'error');
+  if (password !== confirm)
+    return showMsg('su-msg', 'Passwords do not match', 'error');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Creating account…';
+
+  try {
+    const res = await fetch('http://localhost:3300/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password, phone })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showMsg('su-msg', '✅ Account created! Redirecting to sign in…', 'success');
+      setTimeout(() => switchTab('signin'), 1600);
+    } else {
+      showMsg('su-msg', data.message || 'Signup failed', 'error');
+    }
+  } catch {
+    showMsg('su-msg', 'Cannot reach server. Is the backend running?', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+}
+
+// Enter key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('form-signin').style.display !== 'none') doLogin();
+    else doSignup();
+  }
+});
+</script>
+</body>
+</html>
